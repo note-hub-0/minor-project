@@ -1,80 +1,91 @@
 # 📚 NoteHub – A Full Stack Notes Sharing Platform
 
-**NoteHub** is a powerful and user-friendly platform built for students to share and access educational notes. The project encourages collaborative learning and makes study materials more accessible and organized.
+**NoteHub** is a full-stack web application designed to let students upload, share, and explore study notes across various subjects and semesters. Built with modern web technologies, it supports seamless sharing, credit-based downloading, and a student-friendly experience.
 
 ---
 
 ## 🚀 Features
 
 ### 👤 Authentication
-- User Sign Up & Login
-- Password recovery (via email OTP – planned)
-- Session/token-based login security
+- Sign Up & Login
+- Password recovery (Email OTP – upcoming)
+- Secure token/session-based login
 
 ### 📝 Notes Management
-- Upload notes (PDFs, images, docs, etc.)
-- Add descriptions, tags, and subject categories
-- Browse and view notes from all users
+- Upload notes (PDFs, images, DOCs, etc.)
+- Add titles, descriptions, tags, and subject categories
+- Browse and view notes uploaded by others
 
-### 📊 Points and Credits System
+### 🎯 Points & Credit System
 - Earn points for uploading notes
-- Use credits to download premium notes
-- Encourage quality contributions
+- Spend credits to access/download notes
+- Leaderboard & motivation to contribute more
 
-### 🔍 Search and Filters
-- Keyword-based search
-- Filter notes by subject, semester, uploader, or tags
+### 🔍 Smart Search & Filter
+- Keyword-based note search
+- Filters by subject, semester, tags, uploader
 
-### 📈 Dashboard
-- User profile with uploaded/downloaded notes
-- Contribution stats and earned points
+### 📊 User Dashboard
+- Profile view with stats
+- Uploaded/downloaded notes list
+- Points & activity summary
 
-### 🌙 Theme Support (Planned)
-- Toggle between light and dark modes
+### 🌙 UI Themes (Coming Soon)
+- Light/Dark mode toggle
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
 ### Frontend:
-- HTML5, CSS3, JavaScript (Vanilla or can integrate with React in future)
-- Responsive UI (Mobile + Desktop)
+- HTML5, CSS3, JavaScript (Vanilla)
+- Responsive design (mobile + desktop)
 
 ### Backend:
-- Node.js + Express.js
-- REST API-based architecture
+- Node.js, Express.js
+- RESTful API architecture
 
 ### Database:
-- MongoDB (with Mongoose ORM)
+- MongoDB (Mongoose ORM)
 
-### Other Tools:
-- Cloudinary for file/image storage (optional)
-- Nodemailer for OTP & email services
-- Git for version control
+### Others:
+- Cloudinary (for note/image storage)
+- Nodemailer (for email OTPs)
+- Git & GitHub (version control)
 
 ---
 
 ## 📁 Folder Structure
 
+<pre> 
 NoteHub/
 │
-├── public/ # Static assets (logo, icons, etc.)
-├── index.js # Main frontend JS entry
-├── src/
-│ ├── Pages/ # All frontend pages (Home, Upload, Profile, etc.)
-│ ├── Styles/ # CSS files
-│ ├── Scripts/ # JS logic (frontend only)
-│ ├── Utils/ # Reusable utilities
-│ ├── script.js
-│ └── style.css
+├── client/
+│ ├── public/
+│ │ └── assets/ # Static assets (images, icons, etc.)
+│ └── src/
+│ ├── pages/ # All frontend pages (Home, Upload, etc.)
+│ ├── scripts/ # JavaScript logic
+│ ├── styles/ # CSS styling files
+│ ├── .gitkeep # Keeps empty styles folder in Git
+│ └── index.html # Main frontend HTML
 │
-├── backend/
-│ ├── controllers/ # API logic (noteController, userController, etc.)
-│ ├── routes/ # All backend API routes
-│ ├── models/ # MongoDB schema files
-│ ├── middlewares/ # Auth, error handling
-│ └── server.js # Entry point
+├── server/
+│ ├── public/ # Public files served by backend (if any)
+│ └── src/
+│ ├── controllers/ # Route logic (e.g., notes, users)
+│ ├── db/ # MongoDB connection setup
+│ ├── middlewares/ # Auth, error handler, etc.
+│ ├── models/ # Mongoose schemas
+│ ├── routers/ # Express route handlers
+│ ├── utils/ # Reusable server-side utilities
+│ ├── app.js # Main backend entry
+│ ├── constaint.js # Constants (if used)
+│ └── index.js # Server boot entry (e.g., connect DB & start server)
 │
+├── .env # Environment config
+├── README.md # Project documentation
+└── package.json # Project metadata & dependencies
 
-├── package.json
-└── README.md
+
+</pre>
