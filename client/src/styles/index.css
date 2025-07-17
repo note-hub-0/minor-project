@@ -1,0 +1,44 @@
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+    }
+    .logo-text {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fca311;
+    }
+    .hero-section {
+      background-color: #fff;
+      padding: 80px 0;
+    }
+    .hero-section h1 {
+      color: #0f3cc9;
+    }
+    .hero-section p {
+      color: #444;
+    }
+    .btn-primary-custom {
+      background-color: #0f3cc9;
+      border: none;
+    }
+    .btn-outline-primary-custom {
+      color: #0f3cc9;
+      border-color: #0f3cc9;
+    }
+    .section-title {
+      color: #0f3cc9;
+      margin-bottom: 40px;
+    }
+    .note-card, .why-card {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      padding: 20px;
+      background: #fff;
+    }
+    footer {
+      background: #0d1b2a;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
