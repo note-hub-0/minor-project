@@ -49,10 +49,10 @@ export const register = asyncHandler(async (req, res) => {
     throw new ApiError(500, "User cannot created");
   }
   const point = await Point({
-    owner : user._id,
-  })
+    owner: user._id,
+  });
   await user.save();
-  await point.save()
+  await point.save();
   return res
     .status(200)
     .json(new ApiResponce(200, user, "User SingUp succes full"));
@@ -70,7 +70,7 @@ export const login = asyncHandler(async (req, res) => {
   }
   const isPasswordCorrect = await user.isPasswordCorrect(password);
   console.log(isPasswordCorrect);
-  
+
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Password not matched");
   }
@@ -137,159 +137,162 @@ export const refreshAccesToken = asyncHandler(async (req, res) => {
 });
 
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const {oldPassword,newPassword} = req.body
+  const { oldPassword, newPassword } = req.body;
 
-    if (!oldPassword || !newPassword) {
-        throw new ApiError(400,"All field required")
-    }
-    const user = await User.findById(req.user?._id)
-    // console.log(user);
-    
-    const isPasswordCorrect =await user.isPasswordCorrect(oldPassword)
-    if (!isPasswordCorrect) {
-        throw new ApiError(400,"Invalid password")
-    }
-    user.password = newPassword
-    await user.save({validateBeforeSave : false})
-    return res
-    .status(200)
-    .json(
-        new ApiResponce(200,{},"Password changed succesfully")
-    )
-})
-
-export const updateAccountDetails = asyncHandler(async(req,res) => {
-  const {name, username, bio} = req.body
-  if (!name || !username) {
-    throw new ApiError(400,"All fields are required")
+  if (!oldPassword || !newPassword) {
+    throw new ApiError(400, "All field required");
   }
-  const userId = req.user?._id
+  const user = await User.findById(req.user?._id);
+  // console.log(user);
+
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, "Invalid password");
+  }
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  return res
+    .status(200)
+    .json(new ApiResponce(200, {}, "Password changed succesfully"));
+});
+
+export const updateAccountDetails = asyncHandler(async (req, res) => {
+  const { name, username, bio } = req.body;
+  if (!name || !username) {
+    throw new ApiError(400, "All fields are required");
+  }
+  const userId = req.user?._id;
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     {
       name,
       username,
-      bio
+      bio,
     },
     {
-      new : true
+      new: true,
     }
-  )
+  );
   if (!updatedUser) {
-    throw new ApiError(500,"Update account details is failed")
+    throw new ApiError(500, "Update account details is failed");
   }
   return res
-  .status(200)
-  .json(
-    new ApiResponce(200,updatedUser,"Account details are updated succesfully")
-  )
-})
+    .status(200)
+    .json(
+      new ApiResponce(
+        200,
+        updatedUser,
+        "Account details are updated succesfully"
+      )
+    );
+});
 
-export const updateAvatar = asyncHandler(async(req,res) => {
-  const avatarLocalPath = req.files?.avatar[0]?.path
+export const updateAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.files?.avatar[0]?.path;
 
   if (!avatarLocalPath) {
-    throw new ApiError(400,"Avatar is required")
+    throw new ApiError(400, "Avatar is required");
   }
-  const userId = req.user?._id
+  const userId = req.user?._id;
 
-  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath)
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath);
   if (!avatarCloudinaryRes) {
-    throw new ApiError(500,"Failed to upload avatar")
+    throw new ApiError(500, "Failed to upload avatar");
   }
   const updatedUser = await User.findByIdAndUpdate(
     userId,
     {
-      avatar : avatarCloudinaryRes.secure_url
+      avatar: avatarCloudinaryRes.secure_url,
     },
     {
-      new : true
+      new: true,
     }
-  )
+  );
   if (!updatedUser) {
-    throw new ApiError(500, "Failed to upadte avatar")
+    throw new ApiError(500, "Failed to upadte avatar");
   }
 
   return res
-  .status(200)
-  .json(
-    new ApiResponce(200,updatedUser,"Avatar updated succesfully")
-  )
-})
+    .status(200)
+    .json(new ApiResponce(200, updatedUser, "Avatar updated succesfully"));
+});
 
-export const getCurrectUser = asyncHandler(async(req,res) => {
-  const userId = req.user?._id
-  
+export const getCurrectUser = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+
   const user = await User.aggregate([
     {
-      $match : {
-        _id : new mongoose.Types.ObjectId(userId)
-      }
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
     },
     {
-      $lookup : {
-        from : "points",
-        localField : "_id",
-        foreignField : "owner",
-        as : "points_details",
-        pipeline : [
+      $lookup: {
+        from: "points",
+        localField: "_id",
+        foreignField: "owner",
+        as: "points_details",
+        pipeline: [
           {
-            $project : {
-              points : 1
-            }
-          }
-        ]
-      }
+            $project: {
+              points: 1,
+            },
+          },
+        ],
+      },
     },
     {
-      $lookup : {
-        from : "notes",
-        localField : "notes",
-        foreignField : "_id",
-        as : "notes"
-      }
+      $lookup: {
+        from: "notes",
+        localField: "notes",
+        foreignField: "_id",
+        as: "notes",
+      },
     },
     {
-      $addFields : {
-        points : { $arrayElemAt: ["$points_details.points", 0] }
-      }
+      $addFields: {
+        points: { $arrayElemAt: ["$points_details.points", 0] },
+      },
     },
     {
-      $project : {
-        name : 1,
-        username : 1,
-        bio : 1,
-        avatar : 1,
-        notes : 1,
-        points : 1
-      }
-    }
-  ])
+      $project: {
+        name: 1,
+        username: 1,
+        bio: 1,
+        avatar: 1,
+        notes: 1,
+        points: 1,
+      },
+    },
+  ]);
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "User not found");
   }
-  
-  return res
-  .status(200)
-  .json(
-    new ApiResponce(200,user[0],"User featched succesfully")
-  )
-})
 
-export const logout = asyncHandler(async(req,res) => {
-  const userId = req.user?._id
+  return res
+    .status(200)
+    .json(new ApiResponce(200, user[0], "User featched succesfully"));
+});
+
+export const logout = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
   await User.findByIdAndUpdate(
     userId,
     {
-      refreshToken : 1
+      refreshToken: 1,
     },
     {
-      new : true
+      new: true,
     }
-  )
+  );
+
+  const option = {
+    httpOnly : true,
+    secure : true
+  }
   return res
-  .status(200)
-  .json(
-    new ApiResponce(200,{},"User logged out successfully")
-  )
-})
+    .status(200)
+    .clearCookie("accessToken", option)
+    .clearCookie("refreshToken", option)
+    .json(new ApiResponce(200, {}, "User logged out successfully"));
+});

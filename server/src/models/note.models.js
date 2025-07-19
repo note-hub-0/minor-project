@@ -21,7 +21,16 @@ const noteSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",
         require : true
+    },
+    isPremium : {
+        type : Boolean,
+        default : false
+    },
+    price : {
+        type : Number,
+        default : 0
     }
+
 },{timestamps: true})
 
 export const Note = mongoose.model("Note",noteSchema)

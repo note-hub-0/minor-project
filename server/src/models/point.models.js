@@ -11,11 +11,11 @@ const poitnSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    history: [
+    transaction: [
       {
         type: {
           type: String,
-          enum: ["add", "remove"],
+          enum: ["earn", "spend"],
           required: true,
         },
         reason: String,
@@ -32,13 +32,13 @@ const poitnSchema = new mongoose.Schema(
 
 poitnSchema.methods.addPoints = async function(value , reason = ""){
     this.points += value
-    this.history.push({type : "add",value,reason})
+    this.transaction.push({type : "earn",value,reason})
     return this.save()
 }
 
 poitnSchema.methods.removePoints = function(value,reason = "") {
     this.points = Math.max(0,this.points - value)
-    this.history.push({type : "remove",value,reason})
+    this.transaction.push({type : "spend",value,reason})
     return this.save()
 }
 
