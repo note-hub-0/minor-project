@@ -5,6 +5,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 import { Point } from "../models/point.models.js";
+import mongoose from "mongoose";
 
 const generateAccesTokenAndRefreshToken = async (userId) => {
   try {
@@ -155,4 +156,122 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
     .json(
         new ApiResponce(200,{},"Password changed succesfully")
     )
+})
+
+export const updateAccountDetails = asyncHandler(async(req,res) => {
+  const {name, username, bio} = req.body
+  if (!name || !username) {
+    throw new ApiError(400,"All fields are required")
+  }
+  const userId = req.user?._id
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      name,
+      username,
+      bio
+    },
+    {
+      new : true
+    }
+  )
+  if (!updatedUser) {
+    throw new ApiError(500,"Update account details is failed")
+  }
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,updatedUser,"Account details are updated succesfully")
+  )
+})
+
+export const updateAvatar = asyncHandler(async(req,res) => {
+  const avatarLocalPath = req.files?.avatar[0]?.path
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400,"Avatar is required")
+  }
+  const userId = req.user?._id
+
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath)
+  if (!avatarCloudinaryRes) {
+    throw new ApiError(500,"Failed to upload avatar")
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      avatar : avatarCloudinaryRes.secure_url
+    },
+    {
+      new : true
+    }
+  )
+  if (!updatedUser) {
+    throw new ApiError(500, "Failed to upadte avatar")
+  }
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,updatedUser,"Avatar updated succesfully")
+  )
+})
+
+export const getCurrectUser = asyncHandler(async(req,res) => {
+  const userId = req.user?._id
+  
+  const user = await User.aggregate([
+    {
+      $match : {
+        _id : new mongoose.Types.ObjectId(userId)
+      }
+    },
+    {
+      $lookup : {
+        from : "points",
+        localField : "_id",
+        foreignField : "owner",
+        as : "points_details",
+        pipeline : [
+          {
+            $project : {
+              points : 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $lookup : {
+        from : "notes",
+        localField : "notes",
+        foreignField : "_id",
+        as : "notes"
+      }
+    },
+    {
+      $addFields : {
+        points : { $arrayElemAt: ["$points_details.points", 0] }
+      }
+    },
+    {
+      $project : {
+        name : 1,
+        username : 1,
+        bio : 1,
+        avatar : 1,
+        notes : 1,
+        points : 1
+      }
+    }
+  ])
+  if (!user) {
+    throw new ApiError(404, "User not found")
+  }
+  
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,user[0],"User featched succesfully")
+  )
 })
