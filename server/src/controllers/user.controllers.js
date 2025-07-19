@@ -4,6 +4,7 @@ import { ApiResponce } from "../utils/ApiResponce.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
+import { Point } from "../models/point.models.js";
 
 const generateAccesTokenAndRefreshToken = async (userId) => {
   try {
@@ -46,7 +47,11 @@ export const register = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(500, "User cannot created");
   }
+  const point = await Point({
+    owner : user._id,
+  })
   await user.save();
+  await point.save()
   return res
     .status(200)
     .json(new ApiResponce(200, user, "User SingUp succes full"));

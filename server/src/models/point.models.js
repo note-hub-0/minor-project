@@ -42,4 +42,4 @@ poitnSchema.methods.removePoints = function(value,reason = "") {
     return this.save()
 }
 
-export const Points = mongoose.model("Points", poitnSchema);
+export const Point = mongoose.model("Point", poitnSchema);
