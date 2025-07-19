@@ -275,3 +275,21 @@ export const getCurrectUser = asyncHandler(async(req,res) => {
     new ApiResponce(200,user[0],"User featched succesfully")
   )
 })
+
+export const logout = asyncHandler(async(req,res) => {
+  const userId = req.user?._id
+  await User.findByIdAndUpdate(
+    userId,
+    {
+      refreshToken : 1
+    },
+    {
+      new : true
+    }
+  )
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,{},"User logged out successfully")
+  )
+})
