@@ -1,7 +1,7 @@
 import express from "express"
 import {varifyJWT} from "../middlewares/auth.middlewares.js"
 import {upload} from "../middlewares/multer.middlewares.js"
-import { uploadNotes } from "../controllers/note.controllers.js"
+import { getAllNotes, getNoteById, uploadNotes } from "../controllers/note.controllers.js"
 
 const router = express.Router()
 
@@ -20,5 +20,7 @@ router.route("/upload").post(
     ]),
     uploadNotes
 )
+router.route("/").get(getAllNotes)
+router.route("/:noteId").get(getNoteById)
 
 export default router

@@ -22,6 +22,7 @@ const generateAccesTokenAndRefreshToken = async (userId) => {
 };
 export const register = asyncHandler(async (req, res) => {
   const { name, email, username, password, bio } = req.body;
+  const folder = "user"
   if (!name || !email || !username || !password || !bio) {
     throw new ApiError(400, "All fields are required");
   }
@@ -30,7 +31,7 @@ export const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar is required");
   }
 
-  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath);
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath,folder);
   // console.log(avatarCloudinaryRes);
 
   if (!avatarCloudinaryRes) {
@@ -189,13 +190,14 @@ export const updateAccountDetails = asyncHandler(async (req, res) => {
 
 export const updateAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0]?.path;
+  const folder = "user"
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
   }
   const userId = req.user?._id;
 
-  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath);
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath,folder);
   if (!avatarCloudinaryRes) {
     throw new ApiError(500, "Failed to upload avatar");
   }

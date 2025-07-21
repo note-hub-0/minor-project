@@ -10,14 +10,15 @@ cloudinary.config({
     api_secret : process.env.CLOUDINARY_API_SECRET
 })
 
-const uploadOnCloudinary = async(localPath) => {
+const uploadOnCloudinary = async(localPath,folder) => {
     try {
         if(!localPath) return null
 
         
         
         const responce = await cloudinary.uploader.upload(localPath,{
-            resource_type : "raw"
+            resource_type : "raw",
+            folder : folder
         })
         
         if (fs.existsSync(localPath)) {
