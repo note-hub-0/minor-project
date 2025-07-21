@@ -17,7 +17,7 @@ const uploadOnCloudinary = async(localPath) => {
         
         
         const responce = await cloudinary.uploader.upload(localPath,{
-            resource_type : "auto"
+            resource_type : "raw"
         })
         
         if (fs.existsSync(localPath)) {

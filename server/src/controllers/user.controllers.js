@@ -37,7 +37,7 @@ export const register = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Somthing went worng when avatar is uploaded");
   }
 
-  const user = await User({
+  const user = await new User({
     name,
     email,
     username,
@@ -48,7 +48,7 @@ export const register = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(500, "User cannot created");
   }
-  const point = await Point({
+  const point = await new Point({
     owner: user._id,
   });
   await user.save();

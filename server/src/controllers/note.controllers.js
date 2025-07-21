@@ -11,18 +11,22 @@ export const uploadNotes = asyncHandler(async (req, res) => {
   }
   const userId = req.user?._id;
 
-  const noteFileLocalPath = req.files?.note[0]?.path;
+  const noteFileLocalPath = req.files?.note[0];
 
-  if (!noteFileLocalPath) {
+  if (!noteFileLocalPath.path) {
     throw new ApiError(400, "Note file is required");
   }
 
+  const maxSize = 10 * 1024 * 1024
+if (noteFileLocalPath.size > maxSize) {
+  throw new ApiError(400,"File size must be less than 10mb")
+}
   const thumbnailLocalPath = req.files?.thumbnail[0]?.path;
   if (!thumbnailLocalPath) {
     throw new ApiError(400, "thumbnail is required");
   }
 
-  const noteFileCloudinaryRes = await uploadOnCloudinary(noteFileLocalPath);
+  const noteFileCloudinaryRes = await uploadOnCloudinary(noteFileLocalPath.path);
   if (!noteFileCloudinaryRes) {
     throw new ApiError(500, "Failed to upload note file");
   }
@@ -32,7 +36,7 @@ export const uploadNotes = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to upload thumbnail");
   }
 
-  const note = await Note({
+  const note = await new Note({
     title,
     description,
     isPremium : isPremium || false,
