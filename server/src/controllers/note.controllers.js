@@ -3,10 +3,14 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Note } from "../models/note.models.js";
+import { Point } from "../models/point.models.js";
+import mongoose, { mongo } from "mongoose";
+import { User } from "../models/user.models.js";
+import { PurchasedNote } from "../models/purchasedNote.models.js";
 
 export const uploadNotes = asyncHandler(async (req, res) => {
   const { title, description, isPremium, subject, price } = req.body;
-  const folder = "notes"
+  const folder = "notes";
   if (!title || !description || !subject) {
     throw new ApiError(400, "title and description and subject are required");
   }
@@ -18,21 +22,27 @@ export const uploadNotes = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Note file is required");
   }
 
-  const maxSize = 10 * 1024 * 1024
-if (noteFileLocalPath.size > maxSize) {
-  throw new ApiError(400,"File size must be less than 10mb")
-}
+  const maxSize = 10 * 1024 * 1024;
+  if (noteFileLocalPath.size > maxSize) {
+    throw new ApiError(400, "File size must be less than 10mb");
+  }
   const thumbnailLocalPath = req.files?.thumbnail[0];
   if (!thumbnailLocalPath || !thumbnailLocalPath) {
     throw new ApiError(400, "thumbnail is required");
   }
 
-  const noteFileCloudinaryRes = await uploadOnCloudinary(noteFileLocalPath.path,folder);
+  const noteFileCloudinaryRes = await uploadOnCloudinary(
+    noteFileLocalPath.path,
+    folder
+  );
   if (!noteFileCloudinaryRes) {
     throw new ApiError(500, "Failed to upload note file");
   }
 
-  const thumbnailClouldinaryRes = await uploadOnCloudinary(thumbnailLocalPath.path, folder);
+  const thumbnailClouldinaryRes = await uploadOnCloudinary(
+    thumbnailLocalPath.path,
+    folder
+  );
   if (!thumbnailClouldinaryRes) {
     throw new ApiError(500, "Failed to upload thumbnail");
   }
@@ -40,68 +50,193 @@ if (noteFileLocalPath.size > maxSize) {
   const note = await new Note({
     title,
     description,
-    isPremium : isPremium || false,
-    price : isPremium ? price : 0,
-    subject : subject,
-    file : noteFileCloudinaryRes.secure_url,
-    thumbnail : thumbnailClouldinaryRes.secure_url,
-    owner : userId
-  })
+    isPremium: isPremium || false,
+    price: isPremium ? price : 0,
+    subject: subject,
+    file: noteFileCloudinaryRes.secure_url,
+    thumbnail: thumbnailClouldinaryRes.secure_url,
+    owner: userId,
+  });
 
   if (!note) {
-    throw new ApiError(500,"Failed to upload note")
+    throw new ApiError(500, "Failed to upload note");
   }
-  await note.save()
+  const userPoint = await Point.findOne({
+    owner: new mongoose.Types.ObjectId(userId),
+  });
+  const user = await User.findById(userId);
+  await user.notes.push(note._id);
+  await user.save();
+  await userPoint.addPoints(5, "Upload Note");
+  if (isPremium) {
+    const uploadCost = 2;
+    await userPoint.removePoints(uploadCost, "Upload Notes");
+  }
+  await userPoint.save();
+  await note.save();
   return res
-  .status(200)
-  .json(
-    new ApiResponce(200,note,"Note is uploaded successfully")
-  )
+    .status(200)
+    .json(new ApiResponce(200, note, "Note is uploaded successfully"));
 });
 
-export const getAllNotes = asyncHandler(async(req,res) => {
-  const {page,limit} = req.query
+export const getAllNotes = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
   const skip = (page - 1) * limit;
-  const totalNumberOfNotes =await Note.countDocuments()
-  const notes = await Note
-  .find()
-  .skip(skip)
-  .limit(limit)
-  .populate("owner","name username avatar")
+  const totalNumberOfNotes = await Note.countDocuments();
+  const notes = await Note.find()
+    .skip(skip)
+    .limit(limit)
+    .populate("owner", "name username avatar");
 
-  if (!notes || notes.length === 0){
-    throw new ApiError(404,"Not nots yet");
+  if (!notes || notes.length === 0) {
+    throw new ApiError(404, "Not nots yet");
   }
 
-  return res
-  .status(202)
-  .json(
+  return res.status(202).json(
     new ApiResponce(
       202,
       {
         totalNumberOfNotes,
-        currentPage : page,
-        numberOfPage : Math.ceil(totalNumberOfNotes / limit),
-        notes
+        currentPage: page,
+        numberOfPage: Math.ceil(totalNumberOfNotes / limit),
+        notes,
       },
       "Notes are featched successfully"
     )
-  )
+  );
+});
 
-})
-
-export const getNoteById = asyncHandler(async(req,res) => {
-  const {noteId} = req.params
-  const note = await Note
-  .findById(noteId)
-  .populate("owner","name username avatar")
+export const getNoteById = asyncHandler(async (req, res) => {
+  const { noteId } = req.params;
+  const note = await Note.findById(noteId).populate(
+    "owner",
+    "name username avatar"
+  );
   if (!note || note.length === 0) {
-    throw new ApiError(404,"Note not found")
+    throw new ApiError(404, "Note not found");
+  }
+  if (note.isPremium) {
+    const isPurchased = await PurchasedNote.findOne({
+      buyer: req.user?._id,
+      notes: note._id,
+    });
+    if (!isPurchased) {
+      throw new ApiError(
+        403,
+        "You must purchase this premium note to access it."
+      );
+    }
   }
   return res
-  .status(202)
-  .json(
-    new ApiResponce(202,note,"Note featched succesFully")
-  )
-})
+    .status(202)
+    .json(new ApiResponce(202, note, "Note featched succesFully"));
+});
+
+export const buyNote = asyncHandler(async (req, res) => {
+  const { noteId } = req.params;
+  const userId = req.user?._id;
+
+  const note = await Note.findById(noteId);
+
+  if (!note) {
+    throw new ApiError(404, "Not found");
+  }
+  if (!note.isPremium) {
+    throw new ApiError(400, "This notes is free. No need to buy it.");
+  }
+
+  const existingPurchase = await PurchasedNote.findOne({
+    buyer: userId,
+    notes: noteId,
+  });
+  if (existingPurchase) {
+    throw new ApiError(400, "You have already purchased this notes.");
+  }
+
+  const point = await Point.findOne({
+    owner: userId,
+  });
+  if (point.points < note.price) {
+    throw new ApiError(400, "Insufficient points to purchase this note.");
+  }
+  await point.removePoints(note.price, "You are buy a new notes.");
+  await point.save();
+
+  const purchasedNote = await new PurchasedNote({
+    buyer: userId,
+    notes: noteId,
+  });
+  await purchasedNote.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, purchasedNote, "Notes purchased successfully."));
+});
+
+export const getUserNotes = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+
+  const notes = await Note.find({
+    owner: new mongoose.Types.ObjectId(userId),
+  });
+  if (!notes) {
+    throw new ApiError(404, "You have not posted notes yet.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, notes, "Notes featched succesfullt."));
+});
+
+export const getPurchasedNotes = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+
+  const purchasedNotes = await PurchasedNote.aggregate([
+    {
+      $match: {
+        buyer: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "notes",
+        localField: "notes",
+        foreignField: "_id",
+        as: "noteData", 
+      },
+    },
+    {
+      $unwind: "$noteData", 
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "noteData.owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+      },
+    },
+    {
+      $unwind: "$ownerDetails",
+    },
+    {
+      $project: {
+        buyer: 1,
+        purchaseDate: 1,
+        note: "$noteData",              
+        owner: "$ownerDetails.name",
+        username: "$ownerDetails.username",
+        avatar: "$ownerDetails.avatar",
+      },
+    },
+  ]);
+
+  if (!purchasedNotes || purchasedNotes.length === 0) {
+    throw new ApiError(404, "You have not purchased any notes.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, purchasedNotes, "Your purchased notes have been fetched"));
+});
 

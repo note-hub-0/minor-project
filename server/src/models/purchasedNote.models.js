@@ -6,7 +6,7 @@ const purchasedNotesSchema = new mongoose.Schema({
         ref : "User",
         required : true
     },
-    note : {
+    notes : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Note",
         required : true
