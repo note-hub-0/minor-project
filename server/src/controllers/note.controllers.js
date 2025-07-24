@@ -5,10 +5,10 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Note } from "../models/note.models.js";
 
 export const uploadNotes = asyncHandler(async (req, res) => {
-  const { title, description, isPremium, price } = req.body;
+  const { title, description, isPremium, subject, price } = req.body;
   const folder = "notes"
-  if (!title || !description) {
-    throw new ApiError(400, "title and description are required");
+  if (!title || !description || !subject) {
+    throw new ApiError(400, "title and description and subject are required");
   }
   const userId = req.user?._id;
 
@@ -42,6 +42,7 @@ if (noteFileLocalPath.size > maxSize) {
     description,
     isPremium : isPremium || false,
     price : isPremium ? price : 0,
+    subject : subject,
     file : noteFileCloudinaryRes.secure_url,
     thumbnail : thumbnailClouldinaryRes.secure_url,
     owner : userId
@@ -103,3 +104,4 @@ export const getNoteById = asyncHandler(async(req,res) => {
     new ApiResponce(202,note,"Note featched succesFully")
   )
 })
+
