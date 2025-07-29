@@ -60,6 +60,7 @@ export const register = asyncHandler(async (req, res) => {
 });
 export const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
+  
   if (!username || !password) {
     throw new ApiError(400, "All fields are required");
   }
@@ -85,13 +86,14 @@ export const login = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
-    secure: true,
+    secure: false,
+    sameSite : "Lax"
   };
   return res
     .status(200)
     .cookie("accesToken", accessToken, option)
     .cookie("refreshToken", refreshToken, option)
-    .json(new ApiResponce(200, loggedInUser, "User Logged In SuccesFull"));
+    .json(new ApiResponce(200, {loggedInUser,accessToken,refreshToken}, "User Logged In SuccesFull"));
 });
 export const refreshAccesToken = asyncHandler(async (req, res) => {
   const inComingRefreshToken =

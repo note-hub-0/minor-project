@@ -5,6 +5,9 @@ import { buyNote, getAllNotes, getNoteById, getPurchasedNotes, getUserNotes, upl
 
 const router = express.Router()
 
+router.route("/").get(getAllNotes)
+
+
 router.use(varifyJWT)
 
 router.route("/upload").post(
@@ -20,7 +23,6 @@ router.route("/upload").post(
     ]),
     uploadNotes
 )
-router.route("/").get(getAllNotes)
 router.route("/user-notes").get(getUserNotes)
 router.route("/purchased-notes").get(getPurchasedNotes)
 router.route("/:noteId").get(getNoteById)

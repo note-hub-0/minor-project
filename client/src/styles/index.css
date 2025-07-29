@@ -1,44 +1,95 @@
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+      background-color: #121212;
+      color: #f1f1f1;
     }
-    .logo-text {
-      font-size: 28px;
-      font-weight: bold;
-      color: #fca311;
+
+    .bg-dark, .navbar, footer {
+      background-color: #1e1e1e !important;
     }
-    .hero-section {
-      background-color: #fff;
-      padding: 80px 0;
+
+    .note-card, .why-card {
+      background-color: #2a2a2a;
+      border-radius: 10px;
+      padding: 1rem;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
-    .hero-section h1 {
-      color: #0f3cc9;
-    }
-    .hero-section p {
-      color: #444;
-    }
-    .btn-primary-custom {
-      background-color: #0f3cc9;
+
+    .btn-primary, .btn-warning {
+      background-color: #00bcd4;
       border: none;
     }
-    .btn-outline-primary-custom {
-      color: #0f3cc9;
-      border-color: #0f3cc9;
+
+    .btn-outline-primary {
+      border-color: #00bcd4;
+      color: #00bcd4;
     }
+
+    .btn-outline-primary:hover {
+      background-color: #00bcd4;
+      color: #121212;
+    }
+
+    a, .nav-link {
+      color: #f1f1f1 !important;
+    }
+
     .section-title {
-      color: #0f3cc9;
-      margin-bottom: 40px;
+      color: #00bcd4;
     }
-    .note-card, .why-card {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      border-radius: 10px;
-      padding: 20px;
-      background: #fff;
+
+    .hero-section {
+      padding: 4rem 0;
     }
-    footer {
-      background: #0d1b2a;
-      color: white;
-      padding: 20px 0;
-      text-align: center;
+
+    .social-icons a {
+      font-size: 1.3rem;
+      color: #f1f1f1;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #444;
+      padding-top: 1rem;
+    }
+
+    .bg-light {
+      background-color: #1b1b1b !important;
+    }
+ 
+
+
+
+
+    .footer {
+      background-color: #2b2d42;
+      color: #edf2f4;
+      padding: 40px 20px 20px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .footer h4,
+    .footer h3 {
+      color: #ffcc00;
+    }
+
+    .footer a {
+      color: #edf2f4;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      color: #ffcc00;
+    }
+
+    .social-icons img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #444;
+      padding-top: 15px;
+      font-size: 14px;
+      color: #aaa;
     }
