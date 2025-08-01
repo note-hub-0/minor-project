@@ -90,6 +90,10 @@ NoteHub/
 
 </pre>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 95faa8148f57d2f8b4b3179c9e7372a1d2fdd30b
 ## 👥 Team Members & Roles
 
 | Team Member             | 💼 Professional Role Title                  | 📋 Core Responsibilities                                                                 |
@@ -99,4 +103,8 @@ NoteHub/
 | *Deepu Mehra*         | Frontend Development Associate             | Developing static pages using HTML/CSS/JS, supporting UI components                       |
 | *Priya Kumari*        | QA & Testing Analyst                       | Testing app functionalities, checking flow usability, preparing bug reports               |
 | *Sartaj Ali*          | Database & Backend Integration Assistant   | Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support       |
+<<<<<<< HEAD
 | *Amit Yadav*          | UI/UX Design Assistant                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
+=======
+| *Amit Yadav*          | UI/UX Design Assistant                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
+>>>>>>> 95faa8148f57d2f8b4b3179c9e7372a1d2fdd30b
