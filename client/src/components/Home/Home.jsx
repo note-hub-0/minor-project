@@ -1,18 +1,23 @@
 import React from 'react';
+import {Link, useNavigate} from "react-router"
 import heroSection from "../../assets/heroImg-removebg-preview (2) - Copy.png";
 import { useTheme } from '../../Hooks/CustomeHooks/useTheme';
 
 export default function Home() {
   const { theme } = useTheme();
+  const navigate= useNavigate()
 
-  // Bootstrap color mappings
+
   const bg = theme === 'dark' ? 'bg-dark' : 'bg-light';
   const text = theme === 'dark' ? 'text-light' : 'text-dark';
   const cardBg = theme === 'dark' ? 'bg-secondary' : 'bg-white';
 
+    const goToNotes = () => {
+    navigate("/notes");
+  };
+
   return (
     <>
-      {/* Hero Section */}
       <section className={`py-5 ${bg} ${text}`}>
         <div className="container">
           <div className="row align-items-center text-center text-lg-start">
@@ -21,7 +26,7 @@ export default function Home() {
               <p className="mb-4 fs-5">Upload your class notes and earn credits. Download what you need — simple & fast.</p>
               <div>
                 <button className="btn btn-primary btn-lg me-3 shadow-sm">Upload Notes</button>
-                <button className="btn btn-outline-primary btn-lg">Browse Notes</button>
+                <button className="btn btn-outline-primary btn-lg" onClick={goToNotes}>Browse Notes</button>
               </div>
             </div>
             <div className="col-lg-6 mt-5 mt-lg-0">
@@ -31,7 +36,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
       <section className={`py-5 ${bg} ${text} text-center`}>
         <div className="container">
           <h2 className="section-title mb-4">How It Works</h2>
@@ -53,12 +57,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trending Notes */}
+
       <section className={`py-5 ${bg} ${text}`}>
         <div className="container">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="section-title">Trending Notes</h2>
-            <a href="#" className="btn btn-outline-secondary btn-sm">See All</a>
+            <Link to="/notes" className="btn btn-outline-secondary btn-sm">See All</Link>
           </div>
           <div className="row g-4">
             {[
@@ -79,7 +83,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why NoteHub */}
+ 
       <section className={`py-5 ${bg} ${text}`}>
         <div className="container text-center">
           <h2 className="section-title">Why NoteHub?</h2>
