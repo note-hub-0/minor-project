@@ -86,14 +86,13 @@ export const login = asyncHandler(async (req, res) => {
 
   const option = {
     httpOnly: true,
-    secure: false,
-    sameSite : "Lax"
+    secure: true,
   };
   return res
     .status(200)
-    .cookie("accesToken", accessToken, option)
+    .cookie("accessToken", accessToken, option)
     .cookie("refreshToken", refreshToken, option)
-    .json(new ApiResponce(200, {loggedInUser,accessToken,refreshToken}, "User Logged In SuccesFull"));
+    .json(new ApiResponce(200, loggedInUser, "User Logged In SuccesFull"));
 });
 export const refreshAccesToken = asyncHandler(async (req, res) => {
   const inComingRefreshToken =
