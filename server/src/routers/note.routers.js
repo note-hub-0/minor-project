@@ -1,12 +1,12 @@
 import express from "express"
 import {varifyJWT} from "../middlewares/auth.middlewares.js"
 import {upload} from "../middlewares/multer.middlewares.js"
-import { buyNote, getAllNotes, getNoteById, getPurchasedNotes, getUserNotes, uploadNotes } from "../controllers/note.controllers.js"
+import { buyNote, getAllNotes, getClass, getNoteById, getPurchasedNotes, getUserNotes, uploadNotes } from "../controllers/note.controllers.js"
 
 const router = express.Router()
 
 router.route("/").get(getAllNotes)
-
+router.route("/class").get(getClass)
 
 router.use(varifyJWT)
 

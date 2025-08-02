@@ -9,9 +9,9 @@ import { User } from "../models/user.models.js";
 import { PurchasedNote } from "../models/purchasedNote.models.js";
 
 export const uploadNotes = asyncHandler(async (req, res) => {
-  const { title, description, isPremium, subject, price } = req.body;
+  const { title, description, isPremium, subject, price ,Class} = req.body;
   const folder = "notes";
-  if (!title || !description || !subject) {
+  if (!title || !description || !subject || !Class) {
     throw new ApiError(400, "title and description and subject are required");
   }
   const userId = req.user?._id;
@@ -52,6 +52,7 @@ export const uploadNotes = asyncHandler(async (req, res) => {
     description,
     isPremium: isPremium || false,
     price: isPremium ? price : 0,
+    class : Class,
     subject: subject,
     file: noteFileCloudinaryRes.secure_url,
     thumbnail: thumbnailClouldinaryRes.secure_url,
@@ -240,3 +241,14 @@ export const getPurchasedNotes = asyncHandler(async (req, res) => {
     .json(new ApiResponce(200, purchasedNotes, "Your purchased notes have been fetched"));
 });
 
+export const getClass = asyncHandler(async (req ,res) => {
+  const classes = await Note.distinct("class") 
+  if (!classes) {
+    throw new ApiError(404,"Class not found")
+  }
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,classes,"classes fetched succesFully")
+  )
+})

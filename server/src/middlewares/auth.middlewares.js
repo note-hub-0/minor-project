@@ -6,7 +6,9 @@ import { User } from "../models/user.models.js";
 
 const varifyJWT = asyncHandler(async(req, res, next) => {
 try {
-        const token = req.cookies?.accesToken || req.headers.authorization?.split(" ")[1]
+        const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1]
+        // console.log(token);
+        
     
         if (!token) {
             throw new ApiError(401,"Unauthorize request")
