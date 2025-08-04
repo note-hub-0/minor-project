@@ -81,26 +81,30 @@ export const uploadNotes = asyncHandler(async (req, res) => {
 });
 
 export const getAllNotes = asyncHandler(async (req, res) => {
-  const { page, limit ,Class ,subject, sortBy } = req.query;
+  let { page = 1, limit = 10, Class, subject, sortBy } = req.query;
+  page = parseInt(page);
+  limit = parseInt(limit);
   const skip = (page - 1) * limit;
-  const totalNumberOfNotes = await Note.countDocuments();
-  const filters = {}
-  if (Class) filters.class = Class
-  if (subject) filters.subject = subject
+
+  const filters = {};
+  if (Class) filters.class = Class;
+  if (subject) filters.subject = subject;
 
   let sortOption = {};
   if (sortBy === "recent") sortOption = { createdAt: -1 };
   else if (sortBy === "views") sortOption = { views: -1 };
   else if (sortBy === "popular") sortOption = { downloads: -1 };
 
+  const totalNumberOfNotes = await Note.countDocuments(filters);
+
   const notes = await Note.find(filters)
-    .skip(skip)
     .sort(sortOption)
+    .skip(skip)
     .limit(limit)
     .populate("owner", "name username avatar");
 
   if (!notes || notes.length === 0) {
-    throw new ApiError(404, "Not nots yet");
+    throw new ApiError(404, "No notes found");
   }
 
   return res.status(202).json(
@@ -112,10 +116,11 @@ export const getAllNotes = asyncHandler(async (req, res) => {
         numberOfPage: Math.ceil(totalNumberOfNotes / limit),
         notes,
       },
-      "Notes are featched successfully"
+      "Notes fetched successfully"
     )
   );
 });
+
 
 export const getNoteById = asyncHandler(async (req, res) => {
   const { noteId } = req.params;

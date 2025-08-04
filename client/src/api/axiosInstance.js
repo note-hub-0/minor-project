@@ -9,11 +9,12 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   async (err) => {
     const origin = err.config;
+
     if (err.response?.status === 401 && !origin._retry) {
       origin._retry = true;
       try {
         await axios.post(
-          `${import.meta.env.VITE_API_URL}/user/refreshAccesToken`,
+          `${import.meta.env.VITE_API_URL}/user/refreshAccessToken`,
           {},
           { withCredentials: true }
         );
@@ -26,4 +27,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance
+export default axiosInstance;

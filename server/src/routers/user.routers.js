@@ -1,7 +1,7 @@
 import express from "express"
 import {upload} from "../middlewares/multer.middlewares.js"
 import { changeCurrentPassword, getCurrectUser, login, logout, refreshAccesToken, register, updateAccountDetails, updateAvatar } from "../controllers/user.controllers.js"
-import {varifyJWT} from "../middlewares/auth.middlewares.js"
+import {verifyJWT} from "../middlewares/auth.middlewares.js"
 
 const router = express.Router()
 
@@ -11,14 +11,14 @@ router.route("/register").post(
 )
 router.route("/login").post(login)
 router.route("/refreshAccesToken").post(refreshAccesToken)
-router.route("/changePassword").patch(varifyJWT,changeCurrentPassword)
-router.route("/update/name-username").patch(varifyJWT,updateAccountDetails)
+router.route("/changePassword").patch(verifyJWT,changeCurrentPassword)
+router.route("/update/name-username").patch(verifyJWT,updateAccountDetails)
 router.route("/update/avatar").patch(
     upload.fields([{name : "avatar", maxCount : 1}]),
-    varifyJWT,
+    verifyJWT,
     updateAvatar
 )
-router.route("/get/currect-user").get(varifyJWT,getCurrectUser)
-router.route("/logout").post(varifyJWT, logout)
+router.route("/get/currect-user").get(verifyJWT,getCurrectUser)
+router.route("/logout").post(verifyJWT, logout)
 
 export default router

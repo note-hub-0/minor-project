@@ -9,7 +9,6 @@ import Spinner from "../Loader/Spinner";
 
 export default function BrowseNotes() {
   const { theme } = useTheme();
-
   const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
@@ -20,33 +19,35 @@ export default function BrowseNotes() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  // Fetch class list
   const getClass = async () => {
     try {
       const res = await getClasses();
-      //  console.log(res.data.data);
-
       setClasses(res.data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getClass();
   }, []);
 
+  // Fetch subject list when class changes
   const getSubject = async () => {
     try {
       const res = await getSubjectByClass(selectedClass);
-
       setSubjects(res.data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getSubject();
   }, [selectedClass]);
 
+  // Fetch notes
   const fetchNotes = async () => {
     const limit = 10;
     setLoading(true);
@@ -62,11 +63,15 @@ export default function BrowseNotes() {
       setTotalPages(res.data.data.numberOfPage);
     } catch (error) {
       console.error("Error fetching notes", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchNotes();
+    console.log(notes);
+    
   }, [page, selectedClass, selectedSubject]);
 
   return (
@@ -75,11 +80,11 @@ export default function BrowseNotes() {
         <div className="container text-center">
           <h2 className="fw-bold mb-1">Browse Notes</h2>
           <p className="mb-0">
-            Explore notes uploaded by students from different semesters and
-            subjects.
+            Explore notes uploaded by students from different semesters and subjects.
           </p>
         </div>
       </div>
+
       <div className="container mb-4">
         <FilterNotes
           classes={classes}
@@ -92,19 +97,11 @@ export default function BrowseNotes() {
           setSortBy={setSortBy}
         />
       </div>
-      <div className="container py-4">
-        <div className="row g-4">
-          {notes.map((note) => (
-            <div className="col-md-4" key={note._id}>
-              <NoteCard note={note} />
-            </div>
-          ))}
-        </div>
-      </div>
+
       <div className="container py-4">
         {loading ? (
           <Spinner />
-        ) : (
+        ) : notes.length > 0 ? (
           <div className="row g-4">
             {notes.map((note) => (
               <div className="col-md-4" key={note._id}>
@@ -112,8 +109,13 @@ export default function BrowseNotes() {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="text-center py-5 text-muted fs-5">
+            No notes found for selected filters.
+          </div>
         )}
       </div>
+
       <Pagination
         currentPage={page}
         totalPages={totalPages}

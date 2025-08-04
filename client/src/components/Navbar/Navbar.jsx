@@ -60,7 +60,7 @@ export default function Navbar() {
             </li>
             <li className="nav-item">
               <NavLink
-                to="/upload"
+                to="/uploadNotes"
                 className={({ isActive }) =>
                   `nav-link ${isActive ? "active fw-bold text-primary" : ""}`
                 }

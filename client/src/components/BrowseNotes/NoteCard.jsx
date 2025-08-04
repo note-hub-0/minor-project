@@ -4,7 +4,8 @@ import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 
 export default function NoteCard({ note }) {
   const { theme } = useTheme();
-  const { _id, title, description, thumbnail, user } = note;
+  const { _id, title, description, thumbnail, owner } = note;
+  
 
   const isDark = theme === "dark";
   const cardBg = isDark ? "bg-dark text-light border-secondary" : "bg-white text-dark border-light";
@@ -26,12 +27,13 @@ export default function NoteCard({ note }) {
 
         <div className="d-flex align-items-center gap-2 mt-3 mb-3">
           <img
-            src={user?.avatar}
-            alt={user?.name}
+            src={owner?.avatar}
+            alt={owner?.name}
             className="rounded-circle"
             style={{ width: "32px", height: "32px", objectFit: "cover" }}
           />
-          <span className="fw-medium">{user?.name}</span>
+          <span className="fw-medium">{owner?.name}</span>
+          
         </div>
 
         <div className="mt-auto text-end">
