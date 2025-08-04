@@ -1,4 +1,4 @@
 import axios from "./axiosInstance";
 
-export const getAllNotes = (page, limit) =>
-  axios.get(`/notes`, { params: { page, limit }, withCredentials: true });
+export const getAllNotes = (page, limit, Class, subject, sort) =>
+  axios.get(`/notes`, { params: { page, limit, Class, subject, sort}, withCredentials: true });

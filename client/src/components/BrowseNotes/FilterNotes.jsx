@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 
-export default function FilterNotes() {
-  const [selectedClass, setSelectedClass] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-  const [sortBy, setSortBy] = useState("");
+export default function FilterNotes({
+  classes,
+  subjects,
+  sortBy,
+  selectedClass,
+  selectedSubject,
+  setSelectedClass,
+  setSelectedSubject,
+  setSortBy
+}) {
+  // const [selectedClass, setSelectedClass] = useState("");
+  // const [selectedSubject, setSelectedSubject] = useState("");
+  // const [sortBy, setSortBy] = useState("");
 
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -13,6 +22,8 @@ export default function FilterNotes() {
     ? "form-select bg-dark text-light border-secondary"
     : "form-select";
 
+  // console.log(selectedClass);
+
   return (
     <div className="container mb-4">
       <div className="row g-3 align-items-center">
@@ -20,14 +31,17 @@ export default function FilterNotes() {
           <select
             className={selectClass}
             value={selectedClass}
+            name="Class"
             onChange={(e) => setSelectedClass(e.target.value)}
           >
             <option value="">📘 Select Semester</option>
-            <option value="1st">1st Semester</option>
-            <option value="2nd">2nd Semester</option>
-            <option value="3rd">3rd Semester</option>
-            <option value="4th">4th Semester</option>
-            <option value="5th">5th Semester</option>
+            {classes.map((Class) => {
+              return (
+                <option value={Class} key={Class}>
+                  {Class}
+                </option>
+              );
+            })}
           </select>
         </div>
 
@@ -38,11 +52,11 @@ export default function FilterNotes() {
             onChange={(e) => setSelectedSubject(e.target.value)}
           >
             <option value="">📚 Select Subject</option>
-            <option value="DSA">DSA</option>
-            <option value="OS">Operating System</option>
-            <option value="DBMS">DBMS</option>
-            <option value="Python">Python</option>
-            <option value="WebTech">Web Technology</option>
+            {subjects.map((subject) => (
+              <option value={subject} key={subject}>
+                {subject}
+              </option>
+            ))}
           </select>
         </div>
 

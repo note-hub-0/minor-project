@@ -81,11 +81,21 @@ export const uploadNotes = asyncHandler(async (req, res) => {
 });
 
 export const getAllNotes = asyncHandler(async (req, res) => {
-  const { page, limit } = req.query;
+  const { page, limit ,Class ,subject, sortBy } = req.query;
   const skip = (page - 1) * limit;
   const totalNumberOfNotes = await Note.countDocuments();
-  const notes = await Note.find()
+  const filters = {}
+  if (Class) filters.class = Class
+  if (subject) filters.subject = subject
+
+  let sortOption = {};
+  if (sortBy === "recent") sortOption = { createdAt: -1 };
+  else if (sortBy === "views") sortOption = { views: -1 };
+  else if (sortBy === "popular") sortOption = { downloads: -1 };
+
+  const notes = await Note.find(filters)
     .skip(skip)
+    .sort(sortOption)
     .limit(limit)
     .populate("owner", "name username avatar");
 
@@ -250,5 +260,19 @@ export const getClass = asyncHandler(async (req ,res) => {
   .status(200)
   .json(
     new ApiResponce(200,classes,"classes fetched succesFully")
+  )
+})
+
+export const getSubjectByClass = asyncHandler(async(req,res) => {
+  const {Class} = req.query;
+  const subjects = await Note.distinct("subject",{class : Class})
+
+  if (!subjects) {
+    throw new ApiError(404,"Subjects are not found")
+  }
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,subjects,"Subjects are fetched succesfully")
   )
 })

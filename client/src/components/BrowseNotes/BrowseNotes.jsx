@@ -4,27 +4,70 @@ import NoteCard from "./NoteCard";
 import { getAllNotes } from "../../api/notesApi";
 import Pagination from "./Pagination";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
+import { getClasses, getSubjectByClass } from "../../api/fillterApi";
+import Spinner from "../Loader/Spinner";
 
 export default function BrowseNotes() {
   const { theme } = useTheme();
+
+  const [classes, setClasses] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [notes, setNotes] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const getClass = async () => {
+    try {
+      const res = await getClasses();
+      //  console.log(res.data.data);
+
+      setClasses(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getClass();
+  }, []);
+
+  const getSubject = async () => {
+    try {
+      const res = await getSubjectByClass(selectedClass);
+
+      setSubjects(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getSubject();
+  }, [selectedClass]);
 
   const fetchNotes = async () => {
     const limit = 10;
+    setLoading(true);
     try {
-      const res = await getAllNotes(page, limit);
+      const res = await getAllNotes({
+        page,
+        limit,
+        Class: selectedClass,
+        subject: selectedSubject,
+        sortBy
+      });
       setNotes(res.data.data.notes);
       setTotalPages(res.data.data.numberOfPage);
     } catch (error) {
-      console.error("Error fetching notes", err);
+      console.error("Error fetching notes", error);
     }
   };
 
   useEffect(() => {
     fetchNotes();
-  }, [page]);
+  }, [page, selectedClass, selectedSubject]);
 
   return (
     <>
@@ -38,7 +81,16 @@ export default function BrowseNotes() {
         </div>
       </div>
       <div className="container mb-4">
-        <FilterNotes />
+        <FilterNotes
+          classes={classes}
+          subjects={subjects}
+          selectedClass={selectedClass}
+          selectedSubject={selectedSubject}
+          setSelectedClass={setSelectedClass}
+          setSelectedSubject={setSelectedSubject}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
       </div>
       <div className="container py-4">
         <div className="row g-4">
@@ -48,6 +100,19 @@ export default function BrowseNotes() {
             </div>
           ))}
         </div>
+      </div>
+      <div className="container py-4">
+        {loading ? (
+          <Spinner />
+        ) : (
+          <div className="row g-4">
+            {notes.map((note) => (
+              <div className="col-md-4" key={note._id}>
+                <NoteCard note={note} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <Pagination
         currentPage={page}
