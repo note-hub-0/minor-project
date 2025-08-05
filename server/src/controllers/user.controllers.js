@@ -84,6 +84,13 @@ export const login = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
 
+  const userPoints = await Point.findOne({owner : loggedInUser._id}).select("points transaction");
+
+  const UserWithPoitns = {
+    ...loggedInUser.toObject(),
+    points : userPoints?.points || 0,
+    transaction : userPoints?.transaction
+  }
   const option = {
     httpOnly: true,
     secure: true,
@@ -92,7 +99,7 @@ export const login = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, option)
     .cookie("refreshToken", refreshToken, option)
-    .json(new ApiResponce(200, loggedInUser, "User Logged In SuccesFull"));
+    .json(new ApiResponce(200, UserWithPoitns, "User Logged In SuccesFull"));
 });
 export const refreshAccesToken = asyncHandler(async (req, res) => {
   const inComingRefreshToken =
@@ -126,7 +133,7 @@ export const refreshAccesToken = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie("accesToken", accessToken, option)
+    .cookie("accessToken", accessToken, option)
     .cookie("refreshToken", refreshToken, option)
     .json(
       new ApiResponce(
@@ -224,7 +231,7 @@ export const updateAvatar = asyncHandler(async (req, res) => {
 
 export const getCurrectUser = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
-
+  
   const user = await User.aggregate([
     {
       $match: { _id: new mongoose.Types.ObjectId(userId) },

@@ -1,7 +1,7 @@
-import axios from "./axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 export const getAllNotes = ({ page, limit, Class, subject, sortBy }) =>
-  axios.get(`/notes`, {
+  axiosInstance.get(`/notes`, {
     params: {
       page,
       limit,
@@ -14,10 +14,10 @@ export const getAllNotes = ({ page, limit, Class, subject, sortBy }) =>
 
 
 export const uploadNotes = (data, config = {}) =>
-  axios.post(`/notes/upload`, data, {
+  axiosInstance.post(`/notes/upload`, data, {
     withCredentials: true,
 
     onUploadProgress: config.onUploadProgress,
   });
 
-  // export const deleteNoteById= () => axios.delete()
+  export const deleteNoteById= (noteId) => axiosInstance.delete(`/notes/delete/${noteId}`)

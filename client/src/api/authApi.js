@@ -1,7 +1,7 @@
-import axios from "./axiosInstance";
+import axiosInstance from "./axiosInstance";
 
-export const login = (data) => axios.post(`/user/login`,data,{withCredentials : true})
+export const login = (data) => axiosInstance.post(`/user/login`,data,{withCredentials : true})
 
-export const getCurrectUser = () => axios.get(`/user/get/currect-user`,{withCredentials : true})
+export const getCurrectUser = () => axiosInstance.get(`/user/get/currect-user`,{withCredentials : true})
 
-export const logout = () => axios.post(`/user/logout`,{},{withCredentials : true})
+export const logout = () => axiosInstance.post(`/user/logout`,{},{withCredentials : true})

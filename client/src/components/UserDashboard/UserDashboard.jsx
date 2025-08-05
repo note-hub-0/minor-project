@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router";
 import NoteCard from "../BrowseNotes/NoteCard";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 import { getCurrectUser, logout } from "../../api/authApi";
-// import { deleteNoteById } from "../../api/noteApi";
+import { deleteNoteById } from "../../api/notesApi";
+import Spinner from "../Loader/Spinner";
+import UserProfile from "./UserProfile";
 
 const UserDashboard = () => {
   const { theme } = useTheme();
@@ -51,69 +53,30 @@ const UserDashboard = () => {
   };
 
   const handleDeleteNote = async (noteId) => {
-    // const confirmDelete = window.confirm("Are you sure you want to delete this note?");
-    // if (!confirmDelete) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this note?");
+    if (!confirmDelete) return;
 
-    // try {
-    //   await deleteNoteById(noteId);
-    //   setMyNotes((prev) => prev.filter((note) => note._id !== noteId));
-    // } catch (err) {
-    //   console.error("Failed to delete note:", err);
-    // }
+    try {
+      await deleteNoteById(noteId);
+      setMyNotes((prev) => prev.filter((note) => note._id !== noteId));
+    } catch (err) {
+      console.error("Failed to delete note:", err);
+    }
   };
 
   return (
     <div className={`min-vh-100 py-5 px-3 ${bgClass}`}>
-      {/* Profile Section */}
-      <div className={`container mb-5 p-4 rounded shadow ${cardClass}`}>
-        <div className="row align-items-center">
-          <div className="col-md-8 d-flex align-items-center gap-3">
-            <img
-              src={user?.avatar || "https://via.placeholder.com/70"}
-              alt="avatar"
-              className="rounded-circle object-fit-cover"
-              style={{ width: 70, height: 70 }}
-            />
-            <div>
-              <h4 className="fw-bold mb-1">{user?.username || "Username"}</h4>
-              <p className={`mb-0 ${subTitle}`}>Name: {user?.name || "N/A"}</p>
-              <p className={`mb-0 ${subTitle}`}>
-                Total Points:{" "}
-                <span className="fw-semibold text-success">
-                  {user?.points || 0}
-                </span>
-              </p>
-            </div>
-          </div>
-          <div className="col-md-4 text-md-end mt-3 mt-md-0 d-flex flex-column gap-2 align-items-end">
-            <Link
-              to="/point-history"
-              className={`btn btn-sm ${
-                isDark ? "btn-outline-light" : "btn-outline-primary"
-              }`}
-            >
-              Point History
-            </Link>
-            <button
-              onClick={handleLogout}
-              className={`btn btn-sm ${
-                isDark ? "btn-outline-danger" : "btn-outline-danger"
-              }`}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Purchased Notes Section */}
+      <UserProfile handleLogout={handleLogout} user={user} cardClass={cardClass} subTitle = {subTitle} isDark={isDark}/>
+
+ 
       <div className="container mb-5">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className={`fw-semibold ${sectionTitle}`}>📘 Purchased Notes</h5>
           <button className="btn btn-link btn-sm">Show All</button>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <Spinner/>
         ) : purchasedNotes.length > 0 ? (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             {purchasedNotes.slice(0, 4).map((note) => (
@@ -127,7 +90,7 @@ const UserDashboard = () => {
         )}
       </div>
 
-      {/* My Notes Section */}
+ 
       <div className="container mb-5">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5
@@ -138,7 +101,7 @@ const UserDashboard = () => {
           <button className="btn btn-link btn-sm">Show All</button>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <Spinner/>
         ) : myNotes.length > 0 ? (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             {myNotes.slice(0, 4).map((note) => (

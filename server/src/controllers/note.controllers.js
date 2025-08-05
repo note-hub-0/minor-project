@@ -281,3 +281,19 @@ export const getSubjectByClass = asyncHandler(async(req,res) => {
     new ApiResponce(200,subjects,"Subjects are fetched succesfully")
   )
 })
+
+export const deleteNotes = asyncHandler(async(req, res) => {
+  const {noteId} = req.params
+
+  const del = await Note.findByIdAndDelete(noteId)
+
+  if (!res) {
+    throw new ApiError(500,"Failed to delete notes")
+  }
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponce(200,del ,"Notes deleted succesfully")
+  )
+})

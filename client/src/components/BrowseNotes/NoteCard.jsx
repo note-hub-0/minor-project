@@ -47,7 +47,7 @@ export default function NoteCard({ note ,onDelete}) {
           {onDelete && (
             <button
               onClick={() => onDelete(_id)}
-              className="btn btn-sm btn-outline-danger"
+              className="btn btn-sm btn-outline-danger m-3"
             >
               🗑 Delete
             </button>

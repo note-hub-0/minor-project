@@ -1,7 +1,7 @@
 import express from "express"
 import {verifyJWT} from "../middlewares/auth.middlewares.js"
 import {upload} from "../middlewares/multer.middlewares.js"
-import { buyNote, getAllNotes, getClass, getNoteById, getPurchasedNotes, getSubjectByClass, getUserNotes, uploadNotes } from "../controllers/note.controllers.js"
+import { buyNote, deleteNotes, getAllNotes, getClass, getNoteById, getPurchasedNotes, getSubjectByClass, getUserNotes, uploadNotes } from "../controllers/note.controllers.js"
 
 const router = express.Router()
 
@@ -28,5 +28,6 @@ router.route("/user-notes").get(getUserNotes)
 router.route("/purchased-notes").get(getPurchasedNotes)
 router.route("/:noteId").get(getNoteById)
 router.route("/:noteId/buy").post(buyNote)
+router.route("/delete/:noteId").delete(deleteNotes)
 
 export default router
