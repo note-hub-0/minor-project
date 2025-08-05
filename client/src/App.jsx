@@ -12,6 +12,7 @@ import { ThemeProvider } from "./Hooks/ContextApi/Theme/ThemeProvider";
 import Login from "./components/Login/Login";
 import BrowseNotes from "./components/BrowseNotes/BrowseNotes";
 import UploadNotes from "./components/UploadNotes/UploadNotes";
+import UserDashboard from "./components/UserDashboard/UserDashboard";
 
 function App() {
   const router = createBrowserRouter(
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element = {<Login/>}/>
         <Route path="/notes" element = {<BrowseNotes/>}/>
         <Route path="/uploadNotes" element = {<UploadNotes/>}/>
+        <Route path="/profile" element = {<UserDashboard/>} />
       </Route>
     )
   );

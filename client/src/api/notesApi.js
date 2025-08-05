@@ -16,8 +16,8 @@ export const getAllNotes = ({ page, limit, Class, subject, sortBy }) =>
 export const uploadNotes = (data, config = {}) =>
   axios.post(`/notes/upload`, data, {
     withCredentials: true,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+
     onUploadProgress: config.onUploadProgress,
   });
+
+  // export const deleteNoteById= () => axios.delete()

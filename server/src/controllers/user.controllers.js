@@ -227,10 +227,10 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
 
   const user = await User.aggregate([
     {
-      $match: {
-        _id: new mongoose.Types.ObjectId(userId),
-      },
+      $match: { _id: new mongoose.Types.ObjectId(userId) },
     },
+
+    // Get total points
     {
       $lookup: {
         from: "points",
@@ -239,13 +239,13 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
         as: "points_details",
         pipeline: [
           {
-            $project: {
-              points: 1,
-            },
+            $project: { points: 1 },
           },
         ],
       },
     },
+
+    // Get uploaded notes
     {
       $lookup: {
         from: "notes",
@@ -254,11 +254,55 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
         as: "notes",
       },
     },
+
+    // Get purchased notes using purchasednotes collection
     {
-      $addFields: {
-        points: { $arrayElemAt: ["$points_details.points", 0] },
+      $lookup: {
+        from: "purchasednotes", // 👈 Mongoose auto-pluralizes model names
+        let: { userId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$buyer", "$$userId"] },
+            },
+          },
+          {
+            $lookup: {
+              from: "notes",
+              localField: "notes",
+              foreignField: "_id",
+              as: "noteDetails",
+            },
+          },
+          {
+            $unwind: "$noteDetails",
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "noteDetails.owner",
+              foreignField: "_id",
+              as: "noteDetails.owner",
+            },
+          },
+          {
+            $unwind: "$noteDetails.owner",
+          },
+          {
+            $replaceRoot: { newRoot: "$noteDetails" },
+          },
+        ],
+        as: "purchasedNotes",
       },
     },
+
+    // Combine points cleanly
+    {
+      $addFields: {
+        points: { $ifNull: [{ $arrayElemAt: ["$points_details.points", 0] }, 0] },
+      },
+    },
+
     {
       $project: {
         name: 1,
@@ -266,18 +310,21 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
         bio: 1,
         avatar: 1,
         notes: 1,
+        purchasedNotes: 1,
         points: 1,
       },
     },
   ]);
-  if (!user) {
+
+  if (!user || user.length === 0) {
     throw new ApiError(404, "User not found");
   }
 
   return res
     .status(200)
-    .json(new ApiResponce(200, user[0], "User featched succesfully"));
+    .json(new ApiResponce(200, user[0], "User fetched successfully"));
 });
+
 
 export const logout = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
