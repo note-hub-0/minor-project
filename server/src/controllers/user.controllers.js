@@ -95,6 +95,8 @@ export const login = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+      domain: ".onrender.com", 
+  path: "/",
   };
   return res
     .status(200)
