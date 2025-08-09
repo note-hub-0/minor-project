@@ -6,6 +6,7 @@ import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 import { Point } from "../models/point.models.js";
 import mongoose from "mongoose";
+import { PurchasedNote } from "../models/purchasedNote.models.js";
 
 
 const generateAccesTokenAndRefreshToken = async (userId) => {
@@ -74,52 +75,58 @@ if (existingUser) {
     .status(200)
     .json(new ApiResponce(200, user, "User SingUp succes full"));
 });
+
 export const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-  
+
   if (!username || !password) {
     throw new ApiError(400, "All fields are required");
   }
-  const user = await User.findOne({
-    username,
-  });
+
+  const user = await User.findOne({ username });
   if (!user) {
     throw new ApiError(404, "User not found");
   }
-  const isPasswordCorrect = await user.isPasswordCorrect(password);
-  console.log(isPasswordCorrect);
 
+  const isPasswordCorrect = await user.isPasswordCorrect(password);
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Password not matched");
   }
 
-  const { accessToken, refreshToken } = await generateAccesTokenAndRefreshToken(
-    user._id
-  );
-  const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
+  const { accessToken, refreshToken } = await generateAccesTokenAndRefreshToken(user._id);
 
-  const userPoints = await Point.findOne({owner : loggedInUser._id}).select("points transaction");
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-  const UserWithPoitns = {
+  const userPoints = await Point.findOne({ owner: loggedInUser._id }).select("points transaction");
+
+  const purchasedNotes = await PurchasedNote.find({ buyer: loggedInUser._id })
+    .populate("notes", "title price isPremium")  
+    .select("-buyer"); 
+
+
+  const UserWithPoitnsAndPurchasedNotes = {
     ...loggedInUser.toObject(),
-    points : userPoints?.points || 0,
-    transaction : userPoints?.transaction
-  }
-  const option = {
+    points: userPoints?.points || 0,
+    transaction: userPoints?.transaction || [],
+    purchasedNotes: purchasedNotes.map(p => p.notes), 
+  };
+
+  // Cookie options
+  const cookieOptions = {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-      // domain: ".onrender.com", 
-  path: "/",
+    path: "/",
   };
+
+ 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, option)
-    .cookie("refreshToken", refreshToken, option)
-    .json(new ApiResponce(200, UserWithPoitns, "User Logged In SuccesFull"));
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(new ApiResponce(200, UserWithPoitnsAndPurchasedNotes, "User Logged In Successfully"));
 });
+
 export const refreshAccesToken = asyncHandler(async (req, res) => {
   const inComingRefreshToken =
     req.cookies?.refreshToken || req.body.refreshToken;

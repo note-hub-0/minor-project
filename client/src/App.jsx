@@ -16,6 +16,12 @@ import UserDashboard from "./components/UserDashboard/UserDashboard";
 import PointHistory from "./components/UserDashboard/PointHistory";
 import Signup from "./components/Signup/Signup";
 import AboutUsPage from "./components/AboutUs/AboutUsPage";
+import NoteDetail from "./components/BrowseNotes/NoteDetail";
+import PurchasedNotesPage from "./components/BrowseNotes/PurchasedNotesPage";
+import SeeAllMyNotes from "./components/UserDashboard/SeeAllMyNotes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import BuyPoints from "./components/Payment/BuyPoints";
 
 function App() {
   const router = createBrowserRouter(
@@ -29,6 +35,10 @@ function App() {
         <Route path="/point-history" element = {<PointHistory/>}/>
         <Route path="/signup" element = {<Signup/>} />
         <Route path="/about" element ={ <AboutUsPage/> }/>
+        <Route path="/notes/:id" element = {<NoteDetail/>} />
+        <Route path="/purchased-notes" element={<PurchasedNotesPage />} />
+        <Route path="/user-notes" element={<SeeAllMyNotes />} />
+        <Route path="/buy-points" element = {<BuyPoints/>} />
       </Route>
     )
   );
@@ -36,6 +46,17 @@ function App() {
     <>
       <ThemeProvider>
         <RouterProvider router={router} />
+        <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       </ThemeProvider>
     </>
   );

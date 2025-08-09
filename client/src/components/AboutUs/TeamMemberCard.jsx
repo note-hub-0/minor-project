@@ -26,7 +26,7 @@ export default function TeamMemberCard({ member, isDark }) {
     const deltaX = (x - centerX) / centerX;
     const deltaY = (y - centerY) / centerY;
 
-    const maxTilt = 10; // degrees
+    const maxTilt = 10;
 
     setTiltStyle({
       transform: `perspective(600px) rotateX(${-deltaY * maxTilt}deg) rotateY(${deltaX * maxTilt}deg) scale(1.05)`,
@@ -34,7 +34,6 @@ export default function TeamMemberCard({ member, isDark }) {
     });
   }
 
-  // Reset tilt when mouse leaves
   function handleMouseLeave() {
     setTiltStyle({ transform: "perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)" });
   }

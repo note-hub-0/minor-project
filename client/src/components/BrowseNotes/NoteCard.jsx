@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 
-export default function NoteCard({ note ,onDelete}) {
+export default function NoteCard({ note, onDelete, onBuyClick, isPurchased }) {
   const { theme } = useTheme();
-  const { _id, title, description, thumbnail, owner } = note;
+  const { _id, title, description, thumbnail, owner, isPremium, price } = note;
 
   const isDark = theme === "dark";
   const cardBg = isDark
@@ -15,16 +15,18 @@ export default function NoteCard({ note ,onDelete}) {
 
   return (
     <div className={`card shadow-sm h-100 border ${cardBg}`}>
-      <img
-        src={thumbnail}
-        className="card-img-top"
-        alt="Note Thumbnail"
-        style={{
-          height: "180px",
-          objectFit: "cover",
-          borderRadius: "0.375rem 0.375rem 0 0",
-        }}
-      />
+      {thumbnail && (
+        <img
+          src={thumbnail}
+          className="card-img-top"
+          alt="Note Thumbnail"
+          style={{
+            height: "180px",
+            objectFit: "cover",
+            borderRadius: "0.375rem 0.375rem 0 0",
+          }}
+        />
+      )}
 
       <div className="card-body d-flex flex-column">
         <h5 className="card-title fw-semibold mb-2">{title}</h5>
@@ -41,13 +43,29 @@ export default function NoteCard({ note ,onDelete}) {
         </div>
 
         <div className="mt-auto text-end">
-          <Link to={`/notes/${_id}`} className={`btn ${btnClass} btn-sm px-3`}>
+          <Link to={`/notes/${_id}`} className={`btn ${btnClass} btn-sm px-3 me-2`}>
             View Note
           </Link>
+
+          {isPremium ? (
+            isPurchased ? (
+              <button className="btn btn-success btn-sm m-2" disabled>
+                Purchased ✓
+              </button>
+            ) : (
+              <button
+                className="btn btn-warning btn-sm m-2"
+                onClick={() => onBuyClick(note)}
+              >
+                Buy Note - {price} Points 🔒
+              </button>
+            )
+          ) : null}
+
           {onDelete && (
             <button
               onClick={() => onDelete(_id)}
-              className="btn btn-sm btn-outline-danger m-3"
+              className="btn btn-sm btn-outline-danger ms-2"
             >
               🗑 Delete
             </button>

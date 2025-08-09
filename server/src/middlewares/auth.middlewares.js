@@ -10,7 +10,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
     const token =
       req.cookies?.accessToken ||
       req.headers.authorization?.split(" ")[1];
-    console.log(token);
+    // console.log(token);
     
     if (!token) {
       return res.status(401).json({ success: false, message: "No token provided" });

@@ -21,3 +21,8 @@ export const uploadNotes = (data, config = {}) =>
   });
 
   export const deleteNoteById= (noteId) => axiosInstance.delete(`/notes/delete/${noteId}`)
+
+  export const getNoteById = (id) => axiosInstance.get(`/notes/${id}`)
+  export const buyNotes = (id) => axiosInstance.post(`/notes/${id}/buy`)
+  export const getPurchasedNotes = () => axiosInstance.get(`notes/purchased-notes`)
+  export const getUserNotes = () => axiosInstance.get(`/notes/user-notes`)

@@ -6,6 +6,7 @@ import { getCurrectUser, logout } from "../../api/authApi";
 import { deleteNoteById } from "../../api/notesApi";
 import Spinner from "../Loader/Spinner";
 import UserProfile from "./UserProfile";
+import MyNoteCard from "./MyNoteCard";
 
 const UserDashboard = () => {
   const { theme } = useTheme();
@@ -46,7 +47,7 @@ const UserDashboard = () => {
     try {
       await logout();
       localStorage.removeItem("user");
-      navigate("/");
+      window.location.href = "/";
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -64,6 +65,12 @@ const UserDashboard = () => {
     }
   };
 
+  const handleSeeAllPurchasedNotes = () => {
+    navigate("/purchased-notes")
+  }
+  const handleSeeAllMyNotes = () => {
+    navigate('/user-notes')
+  }
   return (
     <div className={`min-vh-100 py-5 px-3 ${bgClass}`}>
 
@@ -73,7 +80,7 @@ const UserDashboard = () => {
       <div className="container mb-5">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h5 className={`fw-semibold ${sectionTitle}`}>📘 Purchased Notes</h5>
-          <button className="btn btn-link btn-sm">Show All</button>
+          <button className="btn btn-link btn-sm" onClick={handleSeeAllPurchasedNotes}>Show All</button>
         </div>
         {loading ? (
           <Spinner/>
@@ -81,7 +88,7 @@ const UserDashboard = () => {
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             {purchasedNotes.slice(0, 4).map((note) => (
               <div className="col" key={note._id}>
-                <NoteCard note={note} />
+                <NoteCard note={note} isPurchased={true} />
               </div>
             ))}
           </div>
@@ -98,7 +105,7 @@ const UserDashboard = () => {
           >
             📝 My Notes
           </h5>
-          <button className="btn btn-link btn-sm">Show All</button>
+          <button className="btn btn-link btn-sm" onClick={handleSeeAllMyNotes}>Show All</button>
         </div>
         {loading ? (
           <Spinner/>
@@ -106,7 +113,7 @@ const UserDashboard = () => {
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
             {myNotes.slice(0, 4).map((note) => (
               <div className="col" key={note._id}>
-                <NoteCard note={note} onDelete={handleDeleteNote} />
+                <MyNoteCard note={note} onDelete={handleDeleteNote}/>
               </div>
             ))}
           </div>

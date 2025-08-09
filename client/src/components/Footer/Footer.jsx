@@ -21,7 +21,7 @@ export default function Footer() {
             <ul className="list-unstyled">
               <li><Link to="/about" className="footer-link">About Us</Link></li>
               <li><Link to="/notes" className="footer-link">Browse Notes</Link></li>
-              <li><Link to="/upload" className="footer-link">Upload Note</Link></li>
+              <li><Link to="/uploadNotes" className="footer-link">Upload Note</Link></li>
               <li><Link to="/contact" className="footer-link">Contact</Link></li>
             </ul>
           </div>

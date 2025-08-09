@@ -15,6 +15,9 @@ export default function Home() {
     const goToNotes = () => {
     navigate("/notes");
   };
+  const goToUpload = () => {
+    navigate("/uploadNotes")
+  }
 
   return (
     <>
@@ -25,7 +28,7 @@ export default function Home() {
               <h1 className="mb-3 fw-bold">Share. Learn. Grow. with <span className="text-primary">NoteHub!</span></h1>
               <p className="mb-4 fs-5">Upload your class notes and earn credits. Download what you need — simple & fast.</p>
               <div>
-                <button className="btn btn-primary btn-lg me-3 shadow-sm">Upload Notes</button>
+                <button className="btn btn-primary btn-lg me-3 shadow-sm" onClick={goToUpload}>Upload Notes</button>
                 <button className="btn btn-outline-primary btn-lg" onClick={goToNotes}>Browse Notes</button>
               </div>
             </div>
