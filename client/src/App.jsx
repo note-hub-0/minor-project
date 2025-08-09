@@ -15,6 +15,7 @@ import UploadNotes from "./components/UploadNotes/UploadNotes";
 import UserDashboard from "./components/UserDashboard/UserDashboard";
 import PointHistory from "./components/UserDashboard/PointHistory";
 import Signup from "./components/Signup/Signup";
+import AboutUsPage from "./components/AboutUs/AboutUsPage";
 
 function App() {
   const router = createBrowserRouter(
@@ -27,6 +28,7 @@ function App() {
         <Route path="/profile" element = {<UserDashboard/>} />
         <Route path="/point-history" element = {<PointHistory/>}/>
         <Route path="/signup" element = {<Signup/>} />
+        <Route path="/about" element ={ <AboutUsPage/> }/>
       </Route>
     )
   );
