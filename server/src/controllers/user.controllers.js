@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { Point } from "../models/point.models.js";
 import mongoose from "mongoose";
 
+
 const generateAccesTokenAndRefreshToken = async (userId) => {
   try {
     const user = await User.findOne(userId);
@@ -23,7 +24,7 @@ const generateAccesTokenAndRefreshToken = async (userId) => {
 export const register = asyncHandler(async (req, res) => {
   const { name, email, username, password, bio } = req.body;
   const folder = "user"
-  console.log(req.body);
+
   
 
   if (!name || !email || !username || !password || !bio) {
@@ -31,10 +32,16 @@ export const register = asyncHandler(async (req, res) => {
   }
 
     const existingUser = await User.findOne({ $or : [{username}, {email}] });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: "Email already in use" });
-    }
 
+    
+if (existingUser) {
+  if (existingUser.email === email) {
+    return res.status(400).json({ success: false, message: "Email already in use" });
+  }
+  if (existingUser.username === username) {
+    return res.status(400).json({ success: false, message: "Username already taken" });
+  }
+}
   const avatarLocalPath = req.files?.avatar[0]?.path;
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");

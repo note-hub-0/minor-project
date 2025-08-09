@@ -43,11 +43,12 @@ export default function Signup() {
       });
 
       const res = await signup(formDataToSend);
-
-      if (res.success) {
+  
+      
+      if (res.data.statusCode === 200) {
         navigate("/login");
       } else {
-        setErrorMsg(res.message || "Signup failed");
+        setErrorMsg(res.data.message || "Signup failed");
       }
     } catch (error) {
       console.error("Signup Error:", error);
