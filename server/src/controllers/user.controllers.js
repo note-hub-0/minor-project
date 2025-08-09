@@ -141,8 +141,11 @@ export const refreshAccesToken = asyncHandler(async (req, res) => {
   );
   const user = await User.findById(decodeToken._id);
   if (!user) {
-    throw new ApiError(401, "Invalid refreshToken");
+    throw new ApiError(400, "Invalid refreshToken");
   }
+
+// console.log("incoming",inComingRefreshToken);
+// console.log("DB" , user?.refreshToken);
 
 
 
