@@ -29,7 +29,7 @@ export const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-    const existingUser = await User.findOne({ username,email });
+    const existingUser = await User.findOne({ $or : [{username}, {email}] });
     if (existingUser) {
       return res.status(400).json({ success: false, message: "Email already in use" });
     }
