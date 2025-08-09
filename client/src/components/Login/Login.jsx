@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 import { login } from "../../api/authApi";
+import {toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const [formData, setFormData] = useState({
     username: "",
@@ -31,16 +33,26 @@ export default function Login() {
     try {
       const response = await login(formData);
       if (response.status === 200) {
-        const data = response.data
+        const data = response.data;
         const user = data.data;
         console.log(user);
-        
-        localStorage.setItem("user",JSON.stringify(user))
-        navigate("/")
-        window.location.reload()
+
+        localStorage.setItem("user", JSON.stringify(user));
+        toast.success("Logged in successfully! Redirecting...", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+          onClose: () => {
+            navigate("/");
+            window.location.reload();
+          },
+        });
       }
     } catch (error) {
-        setErrorMsg(error.message)
+      setErrorMsg(error.message);
+      toast.error(error.message || "Login failed. Please try again.", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+      });
     }
   };
 
@@ -91,8 +103,13 @@ export default function Login() {
           </div>
 
           <div className="d-grid">
-            <button type="submit" className={`btn btn-primary ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}>
-              {loading ? "Logging in..." : "Login" }
+            <button
+              type="submit"
+              className={`btn btn-primary ${
+                loading ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>
@@ -107,7 +124,6 @@ export default function Login() {
             Sign up
           </Link>
         </p>
-
       </div>
     </main>
   );

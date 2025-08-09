@@ -42,30 +42,37 @@ export default function NoteCard({ note, onDelete, onBuyClick, isPurchased }) {
           <span className="fw-medium">{owner?.name}</span>
         </div>
 
-        <div className="mt-auto text-end">
-          <Link to={`/notes/${_id}`} className={`btn ${btnClass} btn-sm px-3 me-2`}>
-            View Note
-          </Link>
-
+        <div className="mt-auto text-end d-flex justify-content-end align-items-center gap-2">
+          {/* Button Logic */}
           {isPremium ? (
             isPurchased ? (
-              <button className="btn btn-success btn-sm m-2" disabled>
-                Purchased ✓
-              </button>
+              <>
+                <Link to={`/notes/${_id}`} className={`btn ${btnClass} btn-sm px-3`}>
+                  View Note
+                </Link>
+                <button className="btn btn-success btn-sm" disabled>
+                  Purchased ✓
+                </button>
+              </>
             ) : (
               <button
-                className="btn btn-warning btn-sm m-2"
+                className="btn btn-warning btn-sm"
                 onClick={() => onBuyClick(note)}
               >
                 Buy Note - {price} Points 🔒
               </button>
             )
-          ) : null}
+          ) : (
+            <Link to={`/notes/${_id}`} className={`btn ${btnClass} btn-sm px-3`}>
+              View Note
+            </Link>
+          )}
 
+          {/* Delete button if onDelete provided */}
           {onDelete && (
             <button
               onClick={() => onDelete(_id)}
-              className="btn btn-sm btn-outline-danger ms-2"
+              className="btn btn-sm btn-outline-danger"
             >
               🗑 Delete
             </button>

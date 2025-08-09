@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
-import { signup } from "../../api/authApi"; // ✅ Replace with your signup API
+import { signup } from "../../api/authApi";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -43,16 +45,30 @@ export default function Signup() {
       });
 
       const res = await signup(formDataToSend);
-  
-      
+
       if (res.data.statusCode === 200) {
-        navigate("/login");
+        toast.success("Signup successful! Redirecting to login...", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+          onClose: () => {
+            navigate("/login");
+          },
+        });
       } else {
+        toast.error(res.data.message || "Signup failed, please try again.", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 3000,
+        });
+
         setErrorMsg(res.data.message || "Signup failed");
       }
     } catch (error) {
       console.error("Signup Error:", error);
       setErrorMsg("Something went wrong, please try again.");
+      toast.error("Something went wrong, please try again.", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -67,13 +83,15 @@ export default function Signup() {
         <h3 className="text-center mb-4">Sign up to NotesHub</h3>
 
         {errorMsg && (
-          <div className="alert alert-danger text-center py-2 mt-2" role="alert">
+          <div
+            className="alert alert-danger text-center py-2 mt-2"
+            role="alert"
+          >
             {errorMsg}
           </div>
         )}
 
         <form onSubmit={handleOnSubmit} encType="multipart/form-data">
-          
           <div className="mb-3">
             <label className="form-label">Name</label>
             <input
@@ -86,7 +104,6 @@ export default function Signup() {
             />
           </div>
 
-      
           <div className="mb-3">
             <label className="form-label">Username</label>
             <input
@@ -99,7 +116,6 @@ export default function Signup() {
             />
           </div>
 
-        
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
@@ -112,7 +128,6 @@ export default function Signup() {
             />
           </div>
 
-          
           <div className="mb-3">
             <label className="form-label">Password</label>
             <input
@@ -125,7 +140,6 @@ export default function Signup() {
             />
           </div>
 
-         
           <div className="mb-3">
             <label className="form-label">BIO</label>
             <textarea
