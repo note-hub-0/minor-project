@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 import { signup } from "../../api/authApi";
-import { toast } from "react-toastify";
+import { toast, ToastContainer  } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
@@ -48,7 +48,7 @@ export default function Signup() {
 
       if (res.data.statusCode === 200) {
         toast.success("Signup successful! Redirecting to login...", {
-          position: toast.POSITION.TOP_CENTER,
+          position: "top-center",
           autoClose: 2000,
           onClose: () => {
             navigate("/login");

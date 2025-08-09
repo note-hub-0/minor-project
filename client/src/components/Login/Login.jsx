@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useTheme } from "../../Hooks/CustomeHooks/useTheme";
 import { login } from "../../api/authApi";
-import {toast } from "react-toastify";
+import {toast,ToastContainer  } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
@@ -39,7 +39,7 @@ export default function Login() {
 
         localStorage.setItem("user", JSON.stringify(user));
         toast.success("Logged in successfully! Redirecting...", {
-          position: toast.POSITION.TOP_CENTER,
+          position: "top-center",
           autoClose: 2000,
           onClose: () => {
             navigate("/");
