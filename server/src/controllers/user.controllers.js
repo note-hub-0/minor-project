@@ -23,9 +23,17 @@ const generateAccesTokenAndRefreshToken = async (userId) => {
 export const register = asyncHandler(async (req, res) => {
   const { name, email, username, password, bio } = req.body;
   const folder = "user"
+
+
   if (!name || !email || !username || !password || !bio) {
     throw new ApiError(400, "All fields are required");
   }
+
+    const existingUser = await User.findOne({ username,email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "Email already in use" });
+    }
+
   const avatarLocalPath = req.files?.avatar[0]?.path;
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
