@@ -101,4 +101,4 @@ NoteHub/
 | *Priya Kumari*        | QA & Testing Analyst                       | Testing app functionalities, checking flow usability, preparing bug reports               |
 | *Sartaj Ali*          | Database & Backend Integration Assistant   | Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support       |
 | *Amit Yadav*          | UI/UX Design Assistant                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
-| *Amit Yadav*          | UI/UX Design Assistant                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
+
