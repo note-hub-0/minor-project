@@ -8,7 +8,6 @@ import { Point } from "../models/point.models.js";
 import mongoose from "mongoose";
 import { PurchasedNote } from "../models/purchasedNote.models.js";
 
-
 const generateAccesTokenAndRefreshToken = async (userId) => {
   try {
     const user = await User.findOne(userId);
@@ -24,31 +23,32 @@ const generateAccesTokenAndRefreshToken = async (userId) => {
 };
 export const register = asyncHandler(async (req, res) => {
   const { name, email, username, password, bio } = req.body;
-  const folder = "user"
-
-  
+  const folder = "user";
 
   if (!name || !email || !username || !password || !bio) {
     throw new ApiError(400, "All fields are required");
   }
 
-    const existingUser = await User.findOne({ $or : [{username}, {email}] });
+  const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
-    
-if (existingUser) {
-  if (existingUser.email === email) {
-    return res.status(400).json({ success: false, message: "Email already in use" });
+  if (existingUser) {
+    if (existingUser.email === email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already in use" });
+    }
+    if (existingUser.username === username) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Username already taken" });
+    }
   }
-  if (existingUser.username === username) {
-    return res.status(400).json({ success: false, message: "Username already taken" });
-  }
-}
   const avatarLocalPath = req.files?.avatar[0]?.path;
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
   }
 
-  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath,folder);
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath, folder);
   // console.log(avatarCloudinaryRes);
 
   if (!avatarCloudinaryRes) {
@@ -93,22 +93,27 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Password not matched");
   }
 
-  const { accessToken, refreshToken } = await generateAccesTokenAndRefreshToken(user._id);
+  const { accessToken, refreshToken } = await generateAccesTokenAndRefreshToken(
+    user._id
+  );
 
-  const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
 
-  const userPoints = await Point.findOne({ owner: loggedInUser._id }).select("points transaction");
+  const userPoints = await Point.findOne({ owner: loggedInUser._id }).select(
+    "points transaction"
+  );
 
   const purchasedNotes = await PurchasedNote.find({ buyer: loggedInUser._id })
-    .populate("notes", "title price isPremium")  
-    .select("-buyer"); 
-
+    .populate("notes", "title price isPremium")
+    .select("-buyer");
 
   const UserWithPoitnsAndPurchasedNotes = {
     ...loggedInUser.toObject(),
     points: userPoints?.points || 0,
     transaction: userPoints?.transaction || [],
-    purchasedNotes: purchasedNotes.map(p => p.notes), 
+    purchasedNotes: purchasedNotes.map((p) => p.notes),
   };
 
   // Cookie options
@@ -119,12 +124,17 @@ export const login = asyncHandler(async (req, res) => {
     path: "/",
   };
 
- 
   return res
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
     .cookie("refreshToken", refreshToken, cookieOptions)
-    .json(new ApiResponce(200, UserWithPoitnsAndPurchasedNotes, "User Logged In Successfully"));
+    .json(
+      new ApiResponce(
+        200,
+        UserWithPoitnsAndPurchasedNotes,
+        "User Logged In Successfully"
+      )
+    );
 });
 
 export const refreshAccesToken = asyncHandler(async (req, res) => {
@@ -144,10 +154,8 @@ export const refreshAccesToken = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid refreshToken");
   }
 
-// console.log("incoming",inComingRefreshToken);
-// console.log("DB" , user?.refreshToken);
-
-
+  // console.log("incoming",inComingRefreshToken);
+  // console.log("DB" , user?.refreshToken);
 
   if (inComingRefreshToken !== user?.refreshToken) {
     throw new ApiError(400, "RefreshToken is expired");
@@ -229,14 +237,14 @@ export const updateAccountDetails = asyncHandler(async (req, res) => {
 
 export const updateAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const folder = "user"
+  const folder = "user";
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
   }
   const userId = req.user?._id;
 
-  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath,folder);
+  const avatarCloudinaryRes = await uploadOnCloudinary(avatarLocalPath, folder);
   if (!avatarCloudinaryRes) {
     throw new ApiError(500, "Failed to upload avatar");
   }
@@ -260,7 +268,7 @@ export const updateAvatar = asyncHandler(async (req, res) => {
 
 export const getCurrectUser = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
-  
+
   const user = await User.aggregate([
     {
       $match: { _id: new mongoose.Types.ObjectId(userId) },
@@ -335,7 +343,9 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
     // Combine points cleanly
     {
       $addFields: {
-        points: { $ifNull: [{ $arrayElemAt: ["$points_details.points", 0] }, 0] },
+        points: {
+          $ifNull: [{ $arrayElemAt: ["$points_details.points", 0] }, 0],
+        },
       },
     },
 
@@ -361,7 +371,6 @@ export const getCurrectUser = asyncHandler(async (req, res) => {
     .json(new ApiResponce(200, user[0], "User fetched successfully"));
 });
 
-
 export const logout = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
   await User.findByIdAndUpdate(
@@ -375,12 +384,28 @@ export const logout = asyncHandler(async (req, res) => {
   );
 
   const option = {
-    httpOnly : true,
-    secure : true
-  }
+    httpOnly: true,
+    secure: true,
+  };
   return res
     .status(200)
     .clearCookie("accessToken", option)
     .clearCookie("refreshToken", option)
     .json(new ApiResponce(200, {}, "User logged out successfully"));
+});
+
+export const getMe = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponce(
+        200,
+        { isAuthenticated: true, user: { ...req.user } },
+        "User authenticated"
+      )
+    );
 });

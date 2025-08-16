@@ -1,6 +1,6 @@
 import express from "express"
 import {upload} from "../middlewares/multer.middlewares.js"
-import { changeCurrentPassword, getCurrectUser, login, logout, refreshAccesToken, register, updateAccountDetails, updateAvatar } from "../controllers/user.controllers.js"
+import { changeCurrentPassword, getCurrectUser, getMe, login, logout, refreshAccesToken, register, updateAccountDetails, updateAvatar } from "../controllers/user.controllers.js"
 import {verifyJWT} from "../middlewares/auth.middlewares.js"
 
 const router = express.Router()
@@ -20,5 +20,5 @@ router.route("/update/avatar").patch(
 )
 router.route("/get/currect-user").get(verifyJWT,getCurrectUser)
 router.route("/logout").post(verifyJWT, logout)
-
+router.route("/me").get(verifyJWT,getMe)
 export default router
