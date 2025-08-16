@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import PdfViewer from "./PdfViewer";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import Spinner from "../Loader/Spinner";
 import { getNoteById } from "../../api/notesApi";
+import MyNoteDocument from "./MyNoteDocument";
 
 export default function NoteDetail() {
   const { id } = useParams();
@@ -10,28 +11,47 @@ export default function NoteDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchNote() {
+    (async () => {
       try {
         const res = await getNoteById(id);
-        console.log(res.data.data.file);
-        
-        setNote(res.data.data);
+        setNote(res.data?.data);
       } catch (err) {
         console.error("Error fetching note:", err);
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchNote();
+    })();
   }, [id]);
 
   if (loading) return <Spinner />;
   if (!note) return <p>Note not found.</p>;
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
-      <PdfViewer pdfUrl={note.file} />
+    <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column" }}>
+      {/* Header + Download Button */}
+      <div style={{ padding: 12, display: "flex", gap: 12, alignItems: "center" }}>
+        <h2 style={{ margin: 0 }}>{note.title || "Note"}</h2>
+        <PDFDownloadLink
+          document={<MyNoteDocument note={note} />}
+          fileName={`${note.title || "note"}.pdf`}
+        >
+          {({ loading }) => (
+            <button disabled={loading}>
+              {loading ? "Preparing PDF..." : "⬇️ Download Summary"}
+            </button>
+          )}
+        </PDFDownloadLink>
+      </div>
+
+      {/* Show Original Uploaded PDF */}
+      <div style={{ flex: 1, borderTop: "1px solid #e5e5e5" }}>
+        <iframe
+          src={note.file}
+          style={{ width: "100%", height: "100%" }}
+          frameBorder="0"
+          title="Note PDF"
+        />
+      </div>
     </div>
   );
 }
