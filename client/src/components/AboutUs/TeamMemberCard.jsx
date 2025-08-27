@@ -4,7 +4,6 @@ import { FaLinkedin, FaGithub } from "react-icons/fa";
 export default function TeamMemberCard({ member, isDark }) {
   const [tiltStyle, setTiltStyle] = useState({ transform: "perspective(600px)" });
 
-  // Colors & shadows based on theme
   const cardBg = isDark
     ? "rgba(30,30,30,0.65)"
     : "rgba(255,255,255,0.65)";
@@ -14,11 +13,10 @@ export default function TeamMemberCard({ member, isDark }) {
     ? "0 15px 30px rgba(255,255,255,0.15)"
     : "0 15px 30px rgba(0,0,0,0.15)";
 
-  // Handle mouse move for tilt effect
   function handleMouseMove(e) {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left; // x position within the element
-    const y = e.clientY - rect.top;  // y position within the element
+    const x = e.clientX - rect.left; 
+    const y = e.clientY - rect.top; 
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;

@@ -1,5 +1,7 @@
 import React from "react";
 import TeamMemberCard from "./TeamMemberCard";
+import TufailImg from "../../assets/Tufail.jpg"
+import AmitImg from "../../assets/Amit.jpg"
 
 export default function TeamSection({ isDark }) {
   const team = [
@@ -8,7 +10,7 @@ export default function TeamSection({ isDark }) {
       role: "Project Lead & Full-Stack Developer",
       responsibilities:
         "Project planning, frontend & backend development, source control (Git), team coordination",
-      img: "https://randomuser.me/api/portraits/men/75.jpg",
+      img: TufailImg,
       linkedin: "https://linkedin.com/in/tufailansari",
       github: "https://github.com/tufail101",
     },
@@ -48,7 +50,7 @@ export default function TeamSection({ isDark }) {
       role: "UI/UX Design Assistant",
       responsibilities:
         "Creating mockups using Canva/Figma, deciding color palettes, layout ideas",
-      img: "https://randomuser.me/api/portraits/men/22.jpg",
+      img: AmitImg,
     },
   ];
 
