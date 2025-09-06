@@ -2,6 +2,9 @@ import React from "react";
 import TeamMemberCard from "./TeamMemberCard";
 import TufailImg from "../../assets/Tufail.jpg"
 import AmitImg from "../../assets/Amit.jpg"
+import PriyaImg from "../../assets/Priya.jpg"
+import SupriyaImg from "../../assets/Supriya.jpg"
+import SartajImg from "../../assets/Sartaj.jpg"
 
 export default function TeamSection({ isDark }) {
   const team = [
@@ -19,7 +22,7 @@ export default function TeamSection({ isDark }) {
       role: "Technical Content Specialist",
       responsibilities:
         "Preparing project documentation (report + PPT), writing objective, features, conclusion etc.",
-      img: "https://randomuser.me/api/portraits/women/65.jpg",
+      img: SupriyaImg,
       linkedin: "https://linkedin.com/in/supriya-panday",
     },
     {
@@ -35,14 +38,14 @@ export default function TeamSection({ isDark }) {
       role: "QA & Testing Analyst",
       responsibilities:
         "Testing app functionalities, checking flow usability, preparing bug reports",
-      img: "https://randomuser.me/api/portraits/women/50.jpg",
+      img: PriyaImg,
     },
     {
       name: "Sartaj Ali",
       role: "Database & Backend Integration Assistant",
       responsibilities:
         "Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support",
-      img: "https://randomuser.me/api/portraits/men/10.jpg",
+      img: SartajImg,
       linkedin: "https://linkedin.com/in/sartajali",
     },
     {
