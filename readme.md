@@ -97,8 +97,8 @@ NoteHub/
 |-------------------------|--------------------------------------------|-------------------------------------------------------------------------------------------|
 | *Tufail Ansari*       | Project Lead & Full-Stack Developer        | Project planning, frontend & backend development, source control (Git), team coordination |
 | *Supriya Kumari Panday* | Technical Content Specialist               | Preparing project documentation (report + PPT), writing objective, features, conclusion etc. |
-| *Deepu Mehra*         | Frontend Development Associate             | Developing static pages using HTML/CSS/JS, supporting UI components                       |
+| *Deepu Mehra*         | Frontend Developer             | Developing static pages using HTML/CSS/JS, supporting UI components                       |
 | *Priya Kumari*        | QA & Testing Analyst                       | Testing app functionalities, checking flow usability, preparing bug reports               |
-| *Sartaj Ali*          | Database & Backend Integration Assistant   | Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support       |
-| *Amit Yadav*          | UI/UX Design Assistant                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
+| *Sartaj Ali*          | Database Developer   | Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support       |
+| *Amit Yadav*          | UI/UX Design                     | Creating mockups using Canva/Figma, deciding color palettes, layout ideas                 |
 

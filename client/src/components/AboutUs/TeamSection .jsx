@@ -43,7 +43,7 @@ export default function TeamSection({ isDark }) {
     },
     {
       name: "Sartaj Ali",
-      role: "Database & Backend Integration Assistant",
+      role: "Database Developer",
       responsibilities:
         "Setting up database (Firebase/MySQL), testing APIs/data flow, basic backend support",
       img: SartajImg,
