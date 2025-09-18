@@ -5,6 +5,7 @@ import AmitImg from "../../assets/Amit.jpg"
 import PriyaImg from "../../assets/Priya.jpg"
 import SupriyaImg from "../../assets/Supriya.jpg"
 import SartajImg from "../../assets/Sartaj.jpg"
+import DeepuImg from "../../assets/Deepu.jpg"
 
 export default function TeamSection({ isDark }) {
   const team = [
@@ -27,10 +28,10 @@ export default function TeamSection({ isDark }) {
     },
     {
       name: "Deepu Mehra",
-      role: "Frontend Development Associate",
+      role: "Frontend Developer",
       responsibilities:
         "Developing static pages using HTML/CSS/JS, supporting UI components",
-      img: "https://randomuser.me/api/portraits/men/32.jpg",
+      img: DeepuImg,
       github: "https://github.com/deepum",
     },
     {
@@ -50,7 +51,7 @@ export default function TeamSection({ isDark }) {
     },
     {
       name: "Amit Yadav",
-      role: "UI/UX Design Assistant",
+      role: "UI/UX Designer",
       responsibilities:
         "Creating mockups using Canva/Figma, deciding color palettes, layout ideas",
       img: AmitImg,
