@@ -86,7 +86,7 @@ export const getAllNotes = asyncHandler(async (req, res) => {
   limit = parseInt(limit);
   const skip = (page - 1) * limit;
 
-  const filters = {};
+   const filters = { status: "approved" }
   if (Class) filters.class = Class;
   if (subject) filters.subject = subject;
 

@@ -22,6 +22,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    role : {
+      type : String,
+      enum : ["user", "admin"],
+      default : "user"
+    },
+    isBlocked:{
+      type : Boolean,
+      default : false
+    },
     avatar: {
       type: String,
       required: true,
@@ -62,7 +71,9 @@ userSchema.methods.generateAccesToken = async function(){
             _id : this._id,
             name : this.name,
             username : this.username,
-            email : this.email
+            email : this.email,
+            role : this.role,
+            isBlocked : this.isBlocked
         },
         process.env.ACCESS_TOKEN_SECRATE_KEY,
         {

@@ -2,6 +2,7 @@ import express from "express"
 import {upload} from "../middlewares/multer.middlewares.js"
 import { changeCurrentPassword, getCurrectUser, getMe, login, logout, refreshAccesToken, register, updateAccountDetails, updateAvatar } from "../controllers/user.controllers.js"
 import {verifyJWT} from "../middlewares/auth.middlewares.js"
+import { isBlocked } from "../middlewares/verifyUser.middlewares.js"
 
 const router = express.Router()
 
@@ -11,14 +12,15 @@ router.route("/register").post(
 )
 router.route("/login").post(login)
 router.route("/refreshAccesToken").post(refreshAccesToken)
-router.route("/changePassword").patch(verifyJWT,changeCurrentPassword)
-router.route("/update/name-username").patch(verifyJWT,updateAccountDetails)
+router.route("/changePassword").patch(verifyJWT("user"),isBlocked,changeCurrentPassword)
+router.route("/update/name-username").patch(verifyJWT("user"),isBlocked,updateAccountDetails)
 router.route("/update/avatar").patch(
     upload.fields([{name : "avatar", maxCount : 1}]),
-    verifyJWT,
+    verifyJWT("user"),
+    isBlocked,
     updateAvatar
 )
-router.route("/get/currect-user").get(verifyJWT,getCurrectUser)
-router.route("/logout").post(verifyJWT, logout)
-router.route("/me").get(verifyJWT,getMe)
+router.route("/get/currect-user").get(verifyJWT("user"),isBlocked,getCurrectUser)
+router.route("/logout").post(verifyJWT("user"),isBlocked, logout)
+router.route("/me").get(verifyJWT("user"),isBlocked,getMe)
 export default router

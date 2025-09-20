@@ -22,7 +22,7 @@ const generateAccesTokenAndRefreshToken = async (userId) => {
   }
 };
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, username, password, bio } = req.body;
+  const { name, email, username, password, bio, role } = req.body;
   const folder = "user";
 
   if (!name || !email || !username || !password || !bio) {
@@ -61,6 +61,7 @@ export const register = asyncHandler(async (req, res) => {
     username,
     password,
     bio,
+    role: role || "user",
     avatar: avatarCloudinaryRes.secure_url,
   });
   if (!user) {
